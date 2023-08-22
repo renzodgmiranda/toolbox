@@ -1,0 +1,1 @@
+<img src="{{ asset('images/toolbox-logo.png') }}" alt="Toolbox Logo" width="150"/>
