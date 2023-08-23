@@ -11,7 +11,7 @@ class Workorder extends Model
     use HasFactory;
 
     protected $fillable = [
-        'wo_problem'
+        'wo_number', 'wo_problem', 'wo_problemtype', 'wo_description', 'wo_customer_po', 'wo_asset', 'wo_priority', 'wo_trade', 'wo_category', 'wo_tech_nte', 'wo_schedule', 'wo_status'
     ];
 
     /**
