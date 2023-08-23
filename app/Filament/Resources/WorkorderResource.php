@@ -27,9 +27,20 @@ class WorkorderResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('wo_problem')->label('Workorder Problem'),
                 Select::make('customer_id')
                     ->relationship('customers', 'cus_name'),
+                TextInput::make('wo_number')->label('Workorder #'),
+                TextInput::make('wo_problem')->label('Problem'),
+                TextInput::make('wo_problem_type')->label('Problem Type'),
+                TextInput::make('wo_description')->label('Description'),
+                TextInput::make('wo_custome_po')->label('Customer PO'),
+                TextInput::make('wo_asset')->label('Asset'),
+                TextInput::make('wo_priority')->label('Priority'),
+                TextInput::make('wo_trade')->label('Trade'),
+                TextInput::make('wo_category')->label('Category'),
+                TextInput::make('wo_tech_nte')->label('Tech. NTE'),
+                TextInput::make('wo_schedule')->label('Schedule'),
+                TextInput::make('wo_status')->label('Status'),
             ]);
     }
 
