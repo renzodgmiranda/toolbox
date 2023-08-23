@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->string('wo_number');
             $table->string('wo_problem');
-            $table->string('wo_problemtype');
+            $table->string('wo_problem_type');
             $table->string('wo_description');
             $table->string('wo_customer_po');
             $table->string('wo_asset');

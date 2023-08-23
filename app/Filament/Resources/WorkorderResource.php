@@ -33,7 +33,7 @@ class WorkorderResource extends Resource
                 TextInput::make('wo_problem')->label('Problem'),
                 TextInput::make('wo_problem_type')->label('Problem Type'),
                 TextInput::make('wo_description')->label('Description'),
-                TextInput::make('wo_custome_po')->label('Customer PO'),
+                TextInput::make('wo_customer_po')->label('Customer PO'),
                 TextInput::make('wo_asset')->label('Asset'),
                 TextInput::make('wo_priority')->label('Priority'),
                 TextInput::make('wo_trade')->label('Trade'),
