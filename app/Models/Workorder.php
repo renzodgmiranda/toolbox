@@ -19,6 +19,6 @@ class Workorder extends Model
      */
     public function customers(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 }
