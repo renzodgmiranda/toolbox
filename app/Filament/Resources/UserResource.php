@@ -36,12 +36,7 @@ class UserResource extends Resource
             ->schema([
                 TextInput::make('name')->label('Full Name'),
                 TextInput::make('email')->label('Email'),
-                Select::make('role')->label('Role')
-                    ->options([
-                        'is_admin' => 'Admin',
-                        'is_vendor' => 'Vendor',
-                        'is_client' => 'Client'
-                    ])
+                TextInput::make('password')->label('Password')
             ]);
     }
 
@@ -50,8 +45,7 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')->label('Name'),
-                TextColumn::make('email')->label('Email'),
-                TextColumn::make('role')->label('Role')
+                TextColumn::make('email')->label('Email')
             ])
             ->filters([
                 //
