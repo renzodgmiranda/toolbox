@@ -6,6 +6,9 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -26,7 +29,14 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('name')->label('Full Name'),
+                TextInput::make('email')->label('Email'),
+                Select::make('role')->label('Role')
+                    ->options([
+                        'is_admin' => 'Admin',
+                        'is_vendor' => 'Vendor',
+                        'is_client' => 'Client'
+                    ])
             ]);
     }
 
@@ -35,7 +45,8 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')->label('Name'),
-                TextColumn::make('email')->label('Email')
+                TextColumn::make('email')->label('Email'),
+                TextColumn::make('role')->label('Role')
             ])
             ->filters([
                 //
