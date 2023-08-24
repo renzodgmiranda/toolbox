@@ -16,4 +16,17 @@ class ListWorkorders extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    /**
+     * Added filter tabs on Workorder resource
+     */
+    public function getTabs(): array
+    {
+        return [
+            null => ListRecords\Tab::make('All'),
+            'Pending' => ListRecords\Tab::make()->query(fn ($query) => $query->where('wo_status', 'Pending'))->icon('heroicon-m-bolt'),
+            'Ongoing' => ListRecords\Tab::make()->query(fn ($query) => $query->where('wo_status', 'Ongoing'))->icon('heroicon-o-arrow-path'),
+            'Completed' => ListRecords\Tab::make()->query(fn ($query) => $query->where('wo_status', 'Completed'))->icon('heroicon-o-check'),
+        ];
+    }
 }
