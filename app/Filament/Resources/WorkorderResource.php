@@ -35,6 +35,7 @@ class WorkorderResource extends Resource
                         ->schema([
                             Select::make('wo_priority')->label('Priority')
                                 ->selectablePlaceholder(false)
+                                ->default('Low')
                                 ->options([
                                     'Low' => 'Low',
                                     'Medium' => 'Medium',
@@ -57,6 +58,7 @@ class WorkorderResource extends Resource
                             TextInput::make('wo_asset')->label('Asset'),
                             Select::make('wo_status')->label('Status')
                                 ->selectablePlaceholder(false)
+                                ->default('Pending')
                                 ->options([
                                     'Pending' => 'Pending',
                                     'Ongoing' => 'Ongoing',
