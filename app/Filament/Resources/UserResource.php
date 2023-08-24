@@ -16,6 +16,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -36,7 +37,10 @@ class UserResource extends Resource
             ->schema([
                 TextInput::make('name')->label('Full Name'),
                 TextInput::make('email')->label('Email'),
-                TextInput::make('password')->label('Password'),
+                TextInput::make('password')->label('Password')
+                    ->password()
+                    ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
+                    ->dehydrated(fn (?string $state): bool => filled($state)),
                 Select::make('roles')
                     ->relationship('roles', 'name')
             ]);
