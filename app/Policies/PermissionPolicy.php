@@ -13,7 +13,7 @@ class PermissionPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasRole(['Admin', 'Client']);
+        return $user->hasRole(['Admin', 'Client']) || $user->id == 1;
     }
 
     /**
@@ -21,7 +21,7 @@ class PermissionPolicy
      */
     public function view(User $user, Permission $permission)
     {
-        return $user->hasPermissionTo('View');
+        return $user->hasPermissionTo('View') || $user->id == 1;
     }
 
     /**
@@ -29,7 +29,7 @@ class PermissionPolicy
      */
     public function create(User $user)
     {
-        return $user->hasPermissionTo('Create');
+        return $user->hasPermissionTo('Create') || $user->id == 1;
     }
 
     /**
@@ -37,7 +37,7 @@ class PermissionPolicy
      */
     public function update(User $user, Permission $permission)
     {
-        return $user->hasPermissionTo('Edit');
+        return $user->hasPermissionTo('Edit') || $user->id == 1;
     }
 
     /**
@@ -45,7 +45,7 @@ class PermissionPolicy
      */
     public function delete(User $user, Permission $permission)
     {
-        return $user->hasPermissionTo('Delete');
+        return $user->hasPermissionTo('Delete') || $user->id == 1;
     }
 
     /**
