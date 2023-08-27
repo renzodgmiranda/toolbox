@@ -54,8 +54,18 @@ class WorkorderResource extends Resource
                     Tabs\Tab::make('Workorder Details')
                         ->schema([
                             TextInput::make('wo_number')->label('Workorder #'),
-                            Select::make('customer_id')
+                            Select::make('customer_id')->label('Customer')
+                                ->searchable()
+                                ->preload()
                                 ->relationship('customers', 'cus_name'),
+                            Select::make('user_id')->label('Vendor')
+                                ->searchable()
+                                ->preload()
+                                ->relationship('users', 'name', function ($query) {
+                                    $query->whereHas('roles', function ($subQuery) {
+                                        $subQuery->where('name', 'vendor');
+                                    });
+                                }),
                             TextInput::make('wo_problem')->label('Problem'),
                             TextInput::make('wo_problem_type')->label('Problem Type'),
                             MarkdownEditor::make('wo_description')->label('Description'),
@@ -82,7 +92,8 @@ class WorkorderResource extends Resource
                 TextColumn::make('wo_number')->label('Workorder #'),
                 TextColumn::make('wo_problem')->label('Problem'),
                 TextColumn::make('wo_problem_type')->label('Problem Type'),
-                TextColumn::make('customer_id')->label('Customer'),
+                TextColumn::make('customers.cus_name')->label('Customer'),
+                TextColumn::make('users.name')->label('Vendor'),
                 TextColumn::make('wo_priority')->label('Priority')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {            

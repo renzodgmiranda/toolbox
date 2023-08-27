@@ -21,4 +21,12 @@ class Workorder extends Model
     {
         return $this->belongsTo(Customer::class, 'customer_id');
     }
+
+    /**
+     * Create relationship between Workorders and Users (as Vendors)
+     */
+    public function users(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

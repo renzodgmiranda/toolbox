@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('workorders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('customer_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->string('wo_number')->nullable();
             $table->string('wo_problem')->nullable();
             $table->string('wo_problem_type')->nullable();
