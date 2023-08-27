@@ -22,12 +22,35 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        $role = Role::create(['name' => 'Admin']);
-        $role = Role::create(['name' => 'Vendor']);
-        $role = Role::create(['name' => 'Client']);
-        $permission = Permission::create(['name' => 'View']);
-        $permission = Permission::create(['name' => 'Create']);
-        $permission = Permission::create(['name' => 'Edit']);
-        $permission = Permission::create(['name' => 'Delete']);
+        /**
+         * Create Roles
+         */
+        $adminRole = Role::create(['name' => 'Admin']);
+        $vendorRole = Role::create(['name' => 'Vendor']);
+        $clientRole = Role::create(['name' => 'Client']);
+
+        /**
+         * Create Permissions
+         */
+        $viewPermission = Permission::create(['name' => 'View']);
+        $createPermission = Permission::create(['name' => 'Create']);
+        $editPermission = Permission::create(['name' => 'Edit']);
+        $deletePermission = Permission::create(['name' => 'Delete']);
+
+        // Assign permissions to Admin role
+        $adminRole->givePermissionTo($viewPermission);
+        $adminRole->givePermissionTo($createPermission);
+        $adminRole->givePermissionTo($editPermission);
+        $adminRole->givePermissionTo($deletePermission);
+
+        // Assign permissions to Vendor role
+        $vendorRole->givePermissionTo($viewPermission);
+        $vendorRole->givePermissionTo($editPermission);
+
+        // Assign permissions to Client role
+        $clientRole->givePermissionTo($viewPermission);
+        $clientRole->givePermissionTo($createPermission);
+        $clientRole->givePermissionTo($editPermission);
+        $clientRole->givePermissionTo($deletePermission);
     }
 }
