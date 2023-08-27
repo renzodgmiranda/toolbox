@@ -9,4 +9,12 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateWorkorder extends CreateRecord
 {
     protected static string $resource = WorkorderResource::class;
+
+    /**
+     * Redirect back to the list page after creation
+     */
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
