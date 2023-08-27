@@ -12,7 +12,7 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasRole(['Admin', 'Client']);
+        return $user->hasRole(['Admin', 'Client']) || $user->id == 1;
     }
 
     /**
@@ -20,7 +20,7 @@ class UserPolicy
      */
     public function view(User $user, User $model)
     {
-        return $user->hasPermissionTo('View');
+        return $user->hasPermissionTo('View') || $user->id == 1;
     }
 
     /**
@@ -28,7 +28,7 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        return $user->hasPermissionTo('Create');
+        return $user->hasPermissionTo('Create') || $user->id == 1;
     }
 
     /**
@@ -36,7 +36,7 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        return $user->hasPermissionTo('Edit');
+        return $user->hasPermissionTo('Edit') || $user->id == 1;
     }
 
     /**
@@ -44,7 +44,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model)
     {
-        return $user->hasPermissionTo('Delete');
+        return $user->hasPermissionTo('Delete') || $user->id == 1;
     }
 
     /**
