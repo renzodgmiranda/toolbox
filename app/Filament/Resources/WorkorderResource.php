@@ -17,6 +17,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class WorkorderResource extends Resource
 {
@@ -113,6 +114,54 @@ class WorkorderResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('Accept')
+                    ->icon('heroicon-m-check')
+                    ->color('success')
+                    ->button()
+                    ->visible(function (Workorder $workorder) {
+                        return $workorder->wo_status == 'Pending';
+                    })
+                    ->action(function (Workorder $workorder) {
+                        $user = Auth::user();
+                        $workorder->update([
+                            'wo_status' => 'Ongoing',
+                            'user_id' => $user->id,
+                        ]);
+                        $workorder->users()->associate($user);
+                        $workorder->save();
+                    }),
+                Tables\Actions\Action::make('Decline')
+                    ->icon('heroicon-m-x-mark')
+                    ->color('danger')
+                    ->button()
+                    ->visible(function (Workorder $workorder) {
+                        return $workorder->wo_status == 'Pending';
+                    })
+                    ->action(function (Workorder $workorder) {
+                        $user = Auth::user();
+                        $workorder->update([
+                            'wo_status' => 'Pending',
+                            'user_id' => null,
+                        ]);
+                        $workorder->users()->dissociate();
+                        $workorder->save();
+                    }),
+                Tables\Actions\Action::make('Complete')
+                    ->icon('heroicon-o-clipboard-document-check')
+                    ->color('info')
+                    ->button()
+                    ->visible(function (Workorder $workorder) {
+                        return $workorder->wo_status == 'Ongoing';
+                    })
+                    ->action(function (Workorder $workorder) {
+                        $user = Auth::user();
+                        $workorder->update([
+                            'wo_status' => 'Completed',
+                            'user_id' => $user->id,
+                        ]);
+                        $workorder->users()->associate($user);
+                        $workorder->save();
+                    }),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
