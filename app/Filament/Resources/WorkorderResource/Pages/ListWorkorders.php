@@ -23,8 +23,8 @@ class ListWorkorders extends ListRecords
     public function getTabs(): array
     {
         return [
-            null => ListRecords\Tab::make('All'),
-            'Pending' => ListRecords\Tab::make()->query(fn ($query) => $query->where('wo_status', 'Pending'))->icon('heroicon-m-bolt'),
+            null => ListRecords\Tab::make('All')->icon('heroicon-o-bars-4'),
+            'Pending' => ListRecords\Tab::make()->query(fn ($query) => $query->where('wo_status', 'Pending'))->icon('heroicon-o-bolt'),
             'Ongoing' => ListRecords\Tab::make()->query(fn ($query) => $query->where('wo_status', 'Ongoing'))->icon('heroicon-o-arrow-path'),
             'Completed' => ListRecords\Tab::make()->query(fn ($query) => $query->where('wo_status', 'Completed'))->icon('heroicon-o-check'),
         ];
