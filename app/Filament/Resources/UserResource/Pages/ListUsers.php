@@ -16,4 +16,17 @@ class ListUsers extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    /**
+     * Added filter tabs on Workorder resource
+     */
+    public function getTabs(): array
+    {
+        return [
+            null => ListRecords\Tab::make('All')->icon('heroicon-o-bars-4'),
+            'Admin' => ListRecords\Tab::make()->query(fn ($query) => $query->role('Admin'))->icon('heroicon-o-user-plus'),
+            'Vendor' => ListRecords\Tab::make()->query(fn ($query) => $query->role('Vendor'))->icon('heroicon-o-wrench-screwdriver'),
+            'Client' => ListRecords\Tab::make()->query(fn ($query) => $query->role('Client'))->icon('heroicon-o-building-office'),
+        ];
+    }
 }
