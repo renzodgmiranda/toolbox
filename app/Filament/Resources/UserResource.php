@@ -6,9 +6,12 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -35,14 +38,22 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->label('Full Name'),
-                TextInput::make('email')->label('Email'),
-                TextInput::make('password')->label('Password')
-                    ->password()
-                    ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
-                    ->dehydrated(fn (?string $state): bool => filled($state)),
-                Select::make('roles')
-                    ->relationship('roles', 'name')
+                Group::make()
+                    ->schema([
+                        Section::make()
+                            ->schema([
+                                TextInput::make('name')->label('Full Name'),
+                                TextInput::make('email')->label('Email'),
+                                TextInput::make('password')->label('Password')
+                                    ->password()
+                                    ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
+                                    ->dehydrated(fn (?string $state): bool => filled($state)),
+                                Select::make('roles')
+                                    ->native(false)
+                                    ->relationship('roles', 'name'),
+                                Toggle::make('user_preferred')->label('Preferred'),
+                            ])
+                    ]),
             ]);
     }
 
