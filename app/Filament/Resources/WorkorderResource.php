@@ -29,7 +29,7 @@ class WorkorderResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        return static::getModel()::where('wo_status', '=', 'Pending')->count();
     }
 
     public static function form(Form $form): Form
@@ -176,7 +176,7 @@ class WorkorderResource extends Resource
                             return false;
                         }
                     
-                        return $workorder->wo_status == 'Pending';
+                        return $workorder->wo_status == 'Ongoing';
                     })
                     ->action(function (Workorder $workorder) {
                         $user = Auth::user();
