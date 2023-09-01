@@ -90,11 +90,15 @@ class WorkorderResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('wo_number')->label('Workorder #'),
-                TextColumn::make('wo_problem')->label('Problem'),
+                TextColumn::make('wo_number')->label('Workorder #')
+                    ->searchable(),
+                TextColumn::make('wo_problem')->label('Problem')
+                    ->searchable(),
                 TextColumn::make('wo_problem_type')->label('Problem Type'),
-                TextColumn::make('customers.cus_name')->label('Customer'),
-                TextColumn::make('users.name')->label('Vendor'),
+                TextColumn::make('customers.cus_name')->label('Customer')
+                    ->searchable(),
+                TextColumn::make('users.name')->label('Vendor')
+                    ->searchable(),
                 TextColumn::make('wo_priority')->label('Priority')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {            
@@ -119,6 +123,13 @@ class WorkorderResource extends Resource
                     ->color('success')
                     ->button()
                     ->visible(function (Workorder $workorder) {
+                        $user = Auth::user();
+                        
+                        // Check if the user has either 'Admin' or 'Client' roles
+                        if($user->hasAnyRole(['Admin', 'Client'])) {
+                            return false;
+                        }
+                    
                         return $workorder->wo_status == 'Pending';
                     })
                     ->action(function (Workorder $workorder) {
@@ -135,6 +146,13 @@ class WorkorderResource extends Resource
                     ->color('danger')
                     ->button()
                     ->visible(function (Workorder $workorder) {
+                        $user = Auth::user();
+                        
+                        // Check if the user has either 'Admin' or 'Client' roles
+                        if($user->hasAnyRole(['Admin', 'Client'])) {
+                            return false;
+                        }
+                    
                         return $workorder->wo_status == 'Pending';
                     })
                     ->action(function (Workorder $workorder) {
@@ -151,7 +169,14 @@ class WorkorderResource extends Resource
                     ->color('info')
                     ->button()
                     ->visible(function (Workorder $workorder) {
-                        return $workorder->wo_status == 'Ongoing';
+                        $user = Auth::user();
+                        
+                        // Check if the user has either 'Admin' or 'Client' roles
+                        if($user->hasAnyRole(['Admin', 'Client'])) {
+                            return false;
+                        }
+                    
+                        return $workorder->wo_status == 'Pending';
                     })
                     ->action(function (Workorder $workorder) {
                         $user = Auth::user();

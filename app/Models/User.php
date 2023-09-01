@@ -53,4 +53,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Workorder::class);
     }
+
+    /**
+     * Check if user has any of the given roles (Workorder Actions)
+     */
+    public function hasAnyRole($roles) {
+        return $this->roles->whereIn('name', $roles)->isNotEmpty();
+    }
 }
