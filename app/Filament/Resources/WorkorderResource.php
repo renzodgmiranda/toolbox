@@ -27,10 +27,21 @@ class WorkorderResource extends Resource
 
     protected static ?string $navigationGroup = 'Resources';
 
+    /**
+     * Display Workorder badge count for different user roles.
+     */
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::where('wo_status', '=', 'Pending')->count();
-    }
+        $user = Auth::user();
+    
+        if ($user->hasRole('Vendor')) {
+            // Only count workorders assigned to the vendor
+            return static::getModel()::where('user_id', $user->id)->count();
+        }
+    
+        // For other roles or users without a specific role, count all workorders
+        return static::getModel()::count();
+    }    
 
     public static function form(Form $form): Form
     {
@@ -89,6 +100,18 @@ class WorkorderResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            /**
+             * Modified table query for Vendors to show only Workorders that were assigned to them
+             */
+            ->modifyQueryUsing(function (Builder $query) {
+                $user = Auth::user();
+
+                if($user->hasRole('Vendor')) {
+                    $query->where('user_id', $user->id);
+                }
+
+                return $query;
+            })
             ->columns([
                 TextColumn::make('wo_number')->label('Workorder #')
                     ->searchable(),
@@ -125,7 +148,6 @@ class WorkorderResource extends Resource
                     ->visible(function (Workorder $workorder) {
                         $user = Auth::user();
                         
-                        // Check if the user has either 'Admin' or 'Client' roles
                         if($user->hasAnyRole(['Admin', 'Client'])) {
                             return false;
                         }
@@ -148,7 +170,6 @@ class WorkorderResource extends Resource
                     ->visible(function (Workorder $workorder) {
                         $user = Auth::user();
                         
-                        // Check if the user has either 'Admin' or 'Client' roles
                         if($user->hasAnyRole(['Admin', 'Client'])) {
                             return false;
                         }
@@ -171,7 +192,6 @@ class WorkorderResource extends Resource
                     ->visible(function (Workorder $workorder) {
                         $user = Auth::user();
                         
-                        // Check if the user has either 'Admin' or 'Client' roles
                         if($user->hasAnyRole(['Admin', 'Client'])) {
                             return false;
                         }
