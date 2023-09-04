@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\WorkorderResource\Pages;
 use App\Filament\Resources\WorkorderResource\RelationManagers;
+use App\Filament\Widgets\WorkorderStats;
 use App\Models\Workorder;
 use Filament\Forms;
 use Filament\Forms\Components\MarkdownEditor;
@@ -238,5 +239,15 @@ class WorkorderResource extends Resource
             'create' => Pages\CreateWorkorder::route('/create'),
             'edit' => Pages\EditWorkorder::route('/{record}/edit'),
         ];
-    }    
+    }
+
+    /**
+     * Get all available widgets for Workorder resource
+     */
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\WorkorderStats::class,
+        ];
+    }
 }
