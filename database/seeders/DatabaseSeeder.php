@@ -81,6 +81,14 @@ class DatabaseSeeder extends Seeder
         ]);
         $user3->assignRole('Vendor');
 
+        $user4 = User::create([
+            'name' => 'Peter Stan',
+            'email' => 'peter.stan@teamspan.com',
+            'password' => bcrypt('renzo973'),
+            'user_preferred' => true,
+        ]);
+        $user4->assignRole('Client');
+
         // Array of company names
         $companies = [
             'Starbucks',
