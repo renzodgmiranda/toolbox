@@ -114,6 +114,7 @@ class DatabaseSeeder extends Seeder
         // Arrays of Sample Data
         $problems = ['Leaky faucet', 'Broken window', 'Damaged roof', 'Electrical issue', 'Heating malfunction'];
         $priorities = ['High', 'Medium', 'Low'];
+        $status = ['Pending', 'Ongoing', 'Completed'];
 
         // Loop to create 10 workorder records with random data
         for ($i = 0; $i < 230; $i++) {
@@ -133,7 +134,7 @@ class DatabaseSeeder extends Seeder
                 'wo_category' => 'Category ' . $i,
                 'wo_tech_nte' => 'Technical note ' . $i,
                 'wo_schedule' => date('Y-m-d H:i:s', strtotime('+' . rand(1, 30) . ' days')),
-                'wo_status' => 'Pending',
+                'wo_status' => $status[array_rand($status)],
                 'created_at' => $randomCreatedAt, // Set the created_at field to a random date within the last 90 days
             ]);
         }
