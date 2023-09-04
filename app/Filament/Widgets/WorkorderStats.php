@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 
 class WorkorderStats extends BaseWidget
 {
+    protected static ?int $sort = 1;
+    
     protected function getStats(): array
     {
         $user = Auth::user(); // Get the currently authenticated user

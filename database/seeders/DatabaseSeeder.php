@@ -116,21 +116,25 @@ class DatabaseSeeder extends Seeder
         $priorities = ['High', 'Medium', 'Low'];
 
         // Loop to create 10 workorder records with random data
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 230; $i++) {
+            $randomDaysAgo = rand(1, 90); // Randomly pick a day within the last 90 days
+            $randomCreatedAt = date('Y-m-d H:i:s', strtotime('-' . $randomDaysAgo . ' days'));
+        
             Workorder::create([
-                'customer_id' => rand(1, 10), // Assuming you have customers with IDs between 1 and 50
+                'customer_id' => rand(1, 10),
                 'wo_number' => 'WO' . rand(100000, 999999),
                 'wo_problem' => $problems[array_rand($problems)],
-                'wo_problem_type' => $problems[array_rand($problems)], // Modify as needed
-                'wo_description' => 'Description ' . $i, // Modify as needed
+                'wo_problem_type' => $problems[array_rand($problems)],
+                'wo_description' => 'Description ' . $i,
                 'wo_customer_po' => 'PO' . rand(100000, 999999),
-                'wo_asset' => 'Asset ' . $i, // Modify as needed
+                'wo_asset' => 'Asset ' . $i,
                 'wo_priority' => $priorities[array_rand($priorities)],
-                'wo_trade' => 'Trade ' . $i, // Modify as needed
-                'wo_category' => 'Category ' . $i, // Modify as needed
-                'wo_tech_nte' => 'Technical note ' . $i, // Modify as needed
-                'wo_schedule' => date('Y-m-d H:i:s', strtotime('+'.rand(1,30).' days')), // Randomly scheduled within the next 30 days
+                'wo_trade' => 'Trade ' . $i,
+                'wo_category' => 'Category ' . $i,
+                'wo_tech_nte' => 'Technical note ' . $i,
+                'wo_schedule' => date('Y-m-d H:i:s', strtotime('+' . rand(1, 30) . ' days')),
                 'wo_status' => 'Pending',
+                'created_at' => $randomCreatedAt, // Set the created_at field to a random date within the last 90 days
             ]);
         }
     }
