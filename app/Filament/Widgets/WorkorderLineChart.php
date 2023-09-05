@@ -14,11 +14,9 @@ class WorkorderLineChart extends ChartWidget
 
     protected static ?string $maxHeight = '200px';
     
-    protected static ?string $heading = 'Workorders';
+    protected static ?string $heading = 'WO Trends';
 
     public ?string $filter = 'month';
-
-    protected int | string | array $columnSpan = 'full';
 
     protected function getFilters(): ?array
     {
