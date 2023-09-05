@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('cus_facility_coordinator_contact')->nullable();
             $table->string('cus_district_coordinator')->nullable();
             $table->string('cus_district_coordinator_contact')->nullable();
+            $table->float('cus_lat')->nullable();
+            $table->float('cus_long')->nullable();
+            $table->string('cus_address')->nullable();
             $table->timestamps();
         });
     }

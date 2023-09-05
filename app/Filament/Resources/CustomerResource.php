@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers;
 use App\Models\Customer;
+use Cheesegrits\FilamentGoogleMaps\Fields\Geocomplete;
+use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Forms;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
@@ -44,6 +46,16 @@ class CustomerResource extends Resource
                                 TextInput::make('cus_facility_coordinator_contact')->label('Facility Coordinator Contact #'),
                                 TextInput::make('cus_district_coordinator')->label('District Coordinator'),
                                 TextInput::make('cus_district_coordinator_contact')->label('District Coordinator Contact #'),
+                            ])
+                    ]),
+                Group::make()
+                    ->schema([
+                        Section::make()
+                            ->schema([
+                                Map::make('cus_location')->label('Location')
+                                    ->autocomplete('cus_address')
+                                    ->autocompleteReverse(true),
+                                Geocomplete::make('cus_address')->label('Address'),
                             ])
                     ]),
             ]);
