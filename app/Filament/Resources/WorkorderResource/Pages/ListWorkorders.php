@@ -32,7 +32,7 @@ class ListWorkorders extends ListRecords
     }
 
     /**
-     * List all available widgets for Workorder resource
+     * List all available widgets on header for Workorder resource
      */
     protected function getHeaderWidgets(): array
     {

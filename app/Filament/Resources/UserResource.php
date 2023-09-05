@@ -95,5 +95,15 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
-    }    
+    }  
+    
+    /**
+     * Get all available widgets for User resource
+     */
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\UserStats::class,
+        ];
+    }
 }

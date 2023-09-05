@@ -29,4 +29,14 @@ class ListUsers extends ListRecords
             'Client' => ListRecords\Tab::make()->query(fn ($query) => $query->role('Client'))->icon('heroicon-o-building-office'),
         ];
     }
+
+    /**
+     * List all available widgets on header for User resource
+     */
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\UserStats::class,
+        ];
+    }
 }
