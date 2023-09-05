@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
+use Cheesegrits\FilamentGoogleMaps\Fields\Geocomplete;
+use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Forms;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Radio;
@@ -52,6 +54,13 @@ class UserResource extends Resource
                                     ->native(false)
                                     ->relationship('roles', 'name'),
                                 Toggle::make('user_preferred')->label('Preferred'),
+                            ]),
+                        Section::make()
+                            ->schema([
+                                Map::make('user_location')->label('Location')
+                                    ->autocomplete('user_address')
+                                    ->autocompleteReverse(true),
+                                Geocomplete::make('user_address')->label('Address'),
                             ])
                     ]),
             ]);
