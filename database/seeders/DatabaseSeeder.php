@@ -10,6 +10,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Workorder;
 use Illuminate\Database\Seeder;
+use Faker\Factory as Faker;
 
 class DatabaseSeeder extends Seeder
 {
@@ -89,6 +90,7 @@ class DatabaseSeeder extends Seeder
         ]);
         $user4->assignRole('Client');
 
+        $faker = Faker::create();
         // Array of company names
         $companies = [
             'Starbucks',
@@ -104,38 +106,35 @@ class DatabaseSeeder extends Seeder
             // ... add more company names as needed
         ];
 
-        // Loop through the array and seed each company into the customers table
         foreach ($companies as $company) {
             Customer::create([
                 'cus_name' => $company,
+                'cus_store_number' => $faker->unique()->numberBetween(1000, 9999),  // generating a unique random 4-digit store number
+                'cus_facility_coordinator' => $faker->name, // generating a random name
+                'cus_facility_coordinator_contact' => $faker->phoneNumber, // generating a random phone number
+                'cus_district_coordinator' => $faker->name, // generating another random name
+                'cus_district_coordinator_contact' => $faker->phoneNumber, // generating another random phone number
             ]);
         }
 
-        // Arrays of Sample Data
-        $problems = ['Leaky faucet', 'Broken window', 'Damaged roof', 'Electrical issue', 'Heating malfunction'];
-        $priorities = ['High', 'Medium', 'Low'];
-        $status = ['Pending', 'Ongoing', 'Completed'];
-
-        // Loop to create 10 workorder records with random data
         for ($i = 0; $i < 230; $i++) {
-            $randomDaysAgo = rand(1, 90); // Randomly pick a day within the last 90 days
-            $randomCreatedAt = date('Y-m-d H:i:s', strtotime('-' . $randomDaysAgo . ' days'));
-        
+            $randomCreatedAt = $faker->dateTimeBetween('-90 days', 'now');
+    
             Workorder::create([
-                'customer_id' => rand(1, 10),
-                'wo_number' => 'WO' . rand(100000, 999999),
-                'wo_problem' => $problems[array_rand($problems)],
-                'wo_problem_type' => $problems[array_rand($problems)],
+                'customer_id' => $faker->numberBetween(1, 10),
+                'wo_number' => 'WO' . $faker->numberBetween(100000, 999999),
+                'wo_problem' => $faker->randomElement(['Leaky faucet', 'Broken window', 'Damaged roof', 'Electrical issue', 'Heating malfunction']),
+                'wo_problem_type' => $faker->randomElement(['Leaky faucet', 'Broken window', 'Damaged roof', 'Electrical issue', 'Heating malfunction']),
                 'wo_description' => 'Description ' . $i,
-                'wo_customer_po' => 'PO' . rand(100000, 999999),
+                'wo_customer_po' => 'PO' . $faker->numberBetween(100000, 999999),
                 'wo_asset' => 'Asset ' . $i,
-                'wo_priority' => $priorities[array_rand($priorities)],
+                'wo_priority' => $faker->randomElement(['High', 'Medium', 'Low']),
                 'wo_trade' => 'Trade ' . $i,
                 'wo_category' => 'Category ' . $i,
                 'wo_tech_nte' => 'Technical note ' . $i,
-                'wo_schedule' => date('Y-m-d H:i:s', strtotime('+' . rand(1, 30) . ' days')),
-                'wo_status' => $status[array_rand($status)],
-                'created_at' => $randomCreatedAt, // Set the created_at field to a random date within the last 90 days
+                'wo_schedule' => $faker->dateTimeBetween('now', '+30 days'),
+                'wo_status' => $faker->randomElement(['Pending', 'Ongoing', 'Completed']),
+                'created_at' => $randomCreatedAt,
             ]);
         }
     }

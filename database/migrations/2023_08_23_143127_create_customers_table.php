@@ -14,6 +14,11 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->string('cus_name');
+            $table->string('cus_store_number')->nullable();
+            $table->string('cus_facility_coordinator')->nullable();
+            $table->string('cus_facility_coordinator_contact')->nullable();
+            $table->string('cus_district_coordinator')->nullable();
+            $table->string('cus_district_coordinator_contact')->nullable();
             $table->timestamps();
         });
     }
