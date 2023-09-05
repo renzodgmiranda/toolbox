@@ -31,6 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->favicon(asset('images/toolbox-favicon.png'))
             ->navigationItems([
                 NavigationItem::make('Help Center')
                 ->url('https://www.teamspan.com', shouldOpenInNewTab: true)
