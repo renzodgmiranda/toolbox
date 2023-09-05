@@ -6,6 +6,8 @@ use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers;
 use App\Models\Customer;
 use Filament\Forms;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -32,7 +34,18 @@ class CustomerResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('cus_name')->label('Customer Name'),
+                Group::make()
+                    ->schema([
+                        Section::make()
+                            ->schema([
+                                TextInput::make('cus_name')->label('Name'),
+                                TextInput::make('cus_store_number')->label('Store #'),
+                                TextInput::make('cus_facility_coordinator')->label('Facility Coordinator'),
+                                TextInput::make('cus_facility_coordinator_contact')->label('Facility Coordinator Contact #'),
+                                TextInput::make('cus_district_coordinator')->label('District Coordinator'),
+                                TextInput::make('cus_district_coordinator_contact')->label('District Coordinator Contact #'),
+                            ])
+                    ]),
             ]);
     }
 
@@ -40,7 +53,12 @@ class CustomerResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('cus_name')->label('Customer Name'),
+                TextColumn::make('cus_name')->label('Name'),
+                TextColumn::make('cus_store_number')->label('Store #'),
+                TextColumn::make('cus_facility_coordinator')->label('Facility Coordinator'),
+                TextColumn::make('cus_facility_coordinator_contact')->label('Facility Coordinator Contact #'),
+                TextColumn::make('cus_district_coordinator')->label('District Coordinator'),
+                TextColumn::make('cus_district_coordinator_contact')->label('District Coordinator Contact #'),
             ])
             ->filters([
                 //
