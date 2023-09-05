@@ -55,6 +55,9 @@ class UserResource extends Resource
                                     ->relationship('roles', 'name'),
                                 Toggle::make('user_preferred')->label('Preferred'),
                             ]),
+                    ]),
+                    Group::make()
+                    ->schema([
                         Section::make()
                             ->schema([
                                 Map::make('user_location')->label('Location')
