@@ -18,6 +18,8 @@ class WorkorderLineChart extends ChartWidget
 
     public ?string $filter = 'month';
 
+    protected int | string | array $columnSpan = 'full';
+
     protected function getFilters(): ?array
     {
         return [
