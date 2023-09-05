@@ -29,7 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('dashboard')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Orange,
             ])
             ->favicon(asset('images/toolbox-favicon.png'))
             ->navigationItems([
