@@ -143,7 +143,7 @@ class DatabaseSeeder extends Seeder
                 'wo_category' => 'Category ' . $i,
                 'wo_tech_nte' => 'Technical note ' . $i,
                 'wo_schedule' => $faker->dateTimeBetween('now', '+30 days'),
-                'wo_status' => 'Pending',
+                'wo_status' => $faker->randomElement(['Pending', 'Ongoing', 'Completed']),
                 'created_at' => $randomCreatedAt,
             ]);
         }
