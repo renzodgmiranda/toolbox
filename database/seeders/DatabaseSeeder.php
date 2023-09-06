@@ -57,12 +57,16 @@ class DatabaseSeeder extends Seeder
         $clientRole->givePermissionTo($editPermission);
         $clientRole->givePermissionTo($deletePermission);
 
+        $faker = Faker::create();
         //Create users automatically for testing
         $user = User::create([
             'name' => 'Renzo Miranda',
             'email' => 'renzo.miranda@teamspan.com',
             'password' => bcrypt('Renzo973!#'),
             'user_preferred' => false,
+            'user_lat' => $faker->latitude(40.49, 40.92),
+            'user_long' => $faker->longitude(-74.26, -73.68),
+            'user_address' => $faker->address
         ]);
         $user->assignRole('Admin');
 
@@ -71,6 +75,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'john.doe@teamspan.com',
             'password' => bcrypt('renzo973'),
             'user_preferred' => true,
+            'user_lat' => $faker->latitude(40.49, 40.92),
+            'user_long' => $faker->longitude(-74.26, -73.68),
+            'user_address' => $faker->address
         ]);
         $user2->assignRole('Vendor');
 
@@ -79,6 +86,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'jane.doe@teamspan.com',
             'password' => bcrypt('renzo973'),
             'user_preferred' => true,
+            'user_lat' => $faker->latitude(40.49, 40.92),
+            'user_long' => $faker->longitude(-74.26, -73.68),
+            'user_address' => $faker->address
         ]);
         $user3->assignRole('Vendor');
 
@@ -87,35 +97,35 @@ class DatabaseSeeder extends Seeder
             'email' => 'peter.stan@teamspan.com',
             'password' => bcrypt('renzo973'),
             'user_preferred' => true,
+            'user_lat' => $faker->latitude(40.49, 40.92),
+            'user_long' => $faker->longitude(-74.26, -73.68),
+            'user_address' => $faker->address
         ]);
         $user4->assignRole('Client');
 
         $faker = Faker::create();
         // Array of company names
         $companies = [
-            'Starbucks',
-            'Apple',
-            'Microsoft',
-            'Google',
-            'Amazon',
-            'Facebook',
-            'Netflix',
-            'Tesla',
-            'Adobe',
-            'Oracle'
+            'Starbucks', 'Apple', 'Microsoft', 'Google', 'Amazon', 'Facebook', 'Netflix', 'Tesla', 'Adobe', 'Oracle'
             // ... add more company names as needed
         ];
-
+        
         foreach ($companies as $company) {
+            $latitude = $faker->latitude(40.49, 40.92);  // Latitude range that approximately covers New York
+            $longitude = $faker->longitude(-74.26, -73.68);  // Longitude range that approximately covers New York
+        
             Customer::create([
                 'cus_name' => $company,
-                'cus_store_number' => $faker->unique()->numberBetween(1000, 9999),  // generating a unique random 4-digit store number
-                'cus_facility_coordinator' => $faker->name, // generating a random name
-                'cus_facility_coordinator_contact' => $faker->phoneNumber, // generating a random phone number
-                'cus_district_coordinator' => $faker->name, // generating another random name
-                'cus_district_coordinator_contact' => $faker->phoneNumber, // generating another random phone number
+                'cus_store_number' => $faker->unique()->numberBetween(1000, 9999),  
+                'cus_facility_coordinator' => $faker->name,
+                'cus_facility_coordinator_contact' => $faker->phoneNumber,
+                'cus_district_coordinator' => $faker->name,
+                'cus_district_coordinator_contact' => $faker->phoneNumber,
+                'cus_lat' => $latitude,
+                'cus_long' => $longitude,
+                'cus_address' => $faker->address,  // This address won't necessarily match the latitude and longitude.
             ]);
-        }
+        }        
 
         for ($i = 0; $i < 230; $i++) {
             $randomCreatedAt = $faker->dateTimeBetween('-90 days', 'now');
