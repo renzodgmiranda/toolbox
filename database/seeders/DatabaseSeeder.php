@@ -129,9 +129,17 @@ class DatabaseSeeder extends Seeder
 
         for ($i = 0; $i < 230; $i++) {
             $randomCreatedAt = $faker->dateTimeBetween('-90 days', 'now');
-    
+            $status = $faker->randomElement(['Pending', 'Ongoing', 'Completed']);
+        
+            // Assign a user for 'Ongoing' and 'Completed' statuses.
+            $userId = null;
+            if ($status !== 'Pending') {
+                $userId = $faker->numberBetween(1, 4); // Assuming you have users with ids from 1 to 50. Adjust this range accordingly.
+            }
+        
             Workorder::create([
                 'customer_id' => $faker->numberBetween(1, 10),
+                'user_id' => $userId, // Assign user here.
                 'wo_number' => 'WO' . $faker->numberBetween(100000, 999999),
                 'wo_problem' => $faker->randomElement(['Leaky faucet', 'Broken window', 'Damaged roof', 'Electrical issue', 'Heating malfunction']),
                 'wo_problem_type' => $faker->randomElement(['Leaky faucet', 'Broken window', 'Damaged roof', 'Electrical issue', 'Heating malfunction']),
@@ -143,9 +151,9 @@ class DatabaseSeeder extends Seeder
                 'wo_category' => 'Category ' . $i,
                 'wo_tech_nte' => 'Technical note ' . $i,
                 'wo_schedule' => $faker->dateTimeBetween('now', '+30 days'),
-                'wo_status' => $faker->randomElement(['Pending', 'Ongoing', 'Completed']),
+                'wo_status' => $status, // Use the status generated above.
                 'created_at' => $randomCreatedAt,
             ]);
-        }
+        }        
     }
 }
