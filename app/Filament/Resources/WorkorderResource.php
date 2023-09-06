@@ -7,7 +7,9 @@ use App\Filament\Resources\WorkorderResource\RelationManagers;
 use App\Filament\Widgets\WorkorderStats;
 use App\Models\Workorder;
 use Filament\Forms;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;
@@ -46,57 +48,60 @@ class WorkorderResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form->schema([
-            Tabs::make('Label')
-                ->tabs([
-                    Tabs\Tab::make('Service Request Overview')
-                        ->schema([
-                            Select::make('wo_priority')->label('Priority')
-                                ->selectablePlaceholder(false)
-                                ->default('Low')
-                                ->options([
-                                    'Low' => 'Low',
-                                    'Medium' => 'Medium',
-                                    'High' => 'High'
-                                ]),
-                            TextInput::make('wo_trade')->label('Trade'),
-                            TextInput::make('wo_category')->label('Category'),
-                            TextInput::make('wo_tech_nte')->label('Tech. NTE'),
-                            TextInput::make('wo_schedule')->label('Schedule'),
-                        ]),
-                    Tabs\Tab::make('Workorder Details')
-                        ->schema([
-                            TextInput::make('wo_number')->label('Workorder #'),
-                            Select::make('customer_id')->label('Customer')
-                                ->searchable()
-                                ->preload()
-                                ->relationship('customers', 'cus_name'),
-                            Select::make('user_id')->label('Vendor')
-                                ->searchable()
-                                ->preload()
-                                ->relationship('users', 'name', function ($query) {
-                                    $query->whereHas('roles', function ($subQuery) {
-                                        $subQuery->where('name', 'vendor');
-                                    });
-                                }),
-                            TextInput::make('wo_problem')->label('Problem'),
-                            TextInput::make('wo_problem_type')->label('Problem Type'),
-                            MarkdownEditor::make('wo_description')->label('Description'),
-                            TextInput::make('wo_customer_po')->label('Customer PO'),
-                            TextInput::make('wo_asset')->label('Asset'),
-                            Select::make('wo_status')->label('Status')
-                                ->selectablePlaceholder(false)
-                                ->default('Pending')
-                                ->options([
-                                    'Pending' => 'Pending',
-                                    'Ongoing' => 'Ongoing',
-                                    'Completed' => 'Completed'
-                                ]),
-                        ]),
-                ])
-                ->activeTab(1)
-        ]);
-    }
+        return $form
+            ->schema([
+                Group::make()
+                    ->schema([
+                        Section::make('Workorder Details')
+                            ->schema([
+                                TextInput::make('wo_number')->label('Workorder #'),
+                                Select::make('customer_id')->label('Customer')
+                                    ->searchable()
+                                    ->preload()
+                                    ->relationship('customers', 'cus_name'),
+                                Select::make('user_id')->label('Vendor')
+                                    ->searchable()
+                                    ->preload()
+                                    ->relationship('users', 'name', function ($query) {
+                                        $query->whereHas('roles', function ($subQuery) {
+                                            $subQuery->where('name', 'vendor');
+                                        });
+                                    }),
+                                TextInput::make('wo_problem')->label('Problem'),
+                                TextInput::make('wo_problem_type')->label('Problem Type'),
+                                MarkdownEditor::make('wo_description')->label('Description'),
+                                TextInput::make('wo_customer_po')->label('Customer PO'),
+                                TextInput::make('wo_asset')->label('Asset'),
+                                Select::make('wo_status')->label('Status')
+                                    ->selectablePlaceholder(false)
+                                    ->default('Pending')
+                                    ->options([
+                                        'Pending' => 'Pending',
+                                        'Ongoing' => 'Ongoing',
+                                        'Completed' => 'Completed'
+                                    ]),
+                            ]),
+                    ]),
+                Group::make()
+                    ->schema([
+                        Section::make('Service Request Overview')
+                            ->schema([
+                                Select::make('wo_priority')->label('Priority')
+                                    ->selectablePlaceholder(false)
+                                    ->default('Low')
+                                    ->options([
+                                        'Low' => 'Low',
+                                        'Medium' => 'Medium',
+                                        'High' => 'High'
+                                    ]),
+                                TextInput::make('wo_trade')->label('Trade'),
+                                TextInput::make('wo_category')->label('Category'),
+                                TextInput::make('wo_tech_nte')->label('Tech. NTE'),
+                                TextInput::make('wo_schedule')->label('Schedule'),
+                            ]),
+                    ]),
+            ]);
+    }    
 
     public static function table(Table $table): Table
     {
