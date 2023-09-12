@@ -36,26 +36,34 @@ class DatabaseSeeder extends Seeder
         /**
          * Create Permissions
          */
-        $viewPermission = Permission::create(['name' => 'View']);
-        $createPermission = Permission::create(['name' => 'Create']);
-        $editPermission = Permission::create(['name' => 'Edit']);
-        $deletePermission = Permission::create(['name' => 'Delete']);
+        $userView = Permission::create(['name' => 'userView']);
+        $userCreate = Permission::create(['name' => 'userCreate']);
+        $userEdit = Permission::create(['name' => 'userEdit']);
+        $userDelete = Permission::create(['name' => 'userDelete']);
+
+        $roleView = Permission::create(['name' => 'roleView']);
+        $roleCreate = Permission::create(['name' => 'roleCreate']);
+        $roleEdit = Permission::create(['name' => 'roleEdit']);
+        $roleDelete = Permission::create(['name' => 'roleDelete']);
+
+        $permissionView = Permission::create(['name' => 'permissionView']);
+        $permissionCreate = Permission::create(['name' => 'permissionCreate']);
+        $permissionEdit = Permission::create(['name' => 'permissionEdit']);
+        $permissionDelete = Permission::create(['name' => 'permissionDelete']);
 
         // Assign permissions to Admin role
-        $adminRole->givePermissionTo($viewPermission);
-        $adminRole->givePermissionTo($createPermission);
-        $adminRole->givePermissionTo($editPermission);
-        $adminRole->givePermissionTo($deletePermission);
-
-        // Assign permissions to Vendor role
-        $vendorRole->givePermissionTo($viewPermission);
-        $vendorRole->givePermissionTo($editPermission);
-
-        // Assign permissions to Client role
-        $clientRole->givePermissionTo($viewPermission);
-        $clientRole->givePermissionTo($createPermission);
-        $clientRole->givePermissionTo($editPermission);
-        $clientRole->givePermissionTo($deletePermission);
+        $adminRole->givePermissionTo($userView);
+        $adminRole->givePermissionTo($userCreate);
+        $adminRole->givePermissionTo($userEdit);
+        $adminRole->givePermissionTo($userDelete);
+        $adminRole->givePermissionTo($roleView);
+        $adminRole->givePermissionTo($roleCreate);
+        $adminRole->givePermissionTo($roleEdit);
+        $adminRole->givePermissionTo($roleDelete);
+        $adminRole->givePermissionTo($permissionView);
+        $adminRole->givePermissionTo($permissionCreate);
+        $adminRole->givePermissionTo($permissionEdit);
+        $adminRole->givePermissionTo($permissionDelete);
 
         $faker = Faker::create();
         //Create users automatically for testing

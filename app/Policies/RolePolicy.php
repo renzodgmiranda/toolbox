@@ -13,7 +13,7 @@ class RolePolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasRole(['Admin', 'Client']) || $user->id == 1;
+        return $user->hasPermissionTo('roleView') || $user->id == 1;
     }
 
     /**
@@ -21,7 +21,7 @@ class RolePolicy
      */
     public function view(User $user, Role $role)
     {
-        return $user->hasPermissionTo('View') || $user->id == 1;
+        return $user->hasPermissionTo('roleView') || $user->id == 1;
     }
 
     /**
@@ -29,7 +29,7 @@ class RolePolicy
      */
     public function create(User $user)
     {
-        return $user->hasPermissionTo('Create') || $user->id == 1;
+        return $user->hasPermissionTo('roleCreate') || $user->id == 1;
     }
 
     /**
@@ -37,7 +37,7 @@ class RolePolicy
      */
     public function update(User $user, Role $role)
     {
-        return $user->hasPermissionTo('Edit') || $user->id == 1;
+        return $user->hasPermissionTo('roleEdit') || $user->id == 1;
     }
 
     /**
@@ -45,7 +45,7 @@ class RolePolicy
      */
     public function delete(User $user, Role $role)
     {
-        return $user->hasPermissionTo('Delete') || $user->id == 1;
+        return $user->hasPermissionTo('roleDelete') || $user->id == 1;
     }
 
     /**
