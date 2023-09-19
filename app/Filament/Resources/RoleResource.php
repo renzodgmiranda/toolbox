@@ -44,22 +44,22 @@ class RoleResource extends Resource
                 TextColumn::make('permissions.name')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'userView' => 'gray',
-                        'userCreate' => 'gray',
-                        'userEdit' => 'gray',
-                        'userDelete' => 'gray',
-                        'roleView' => 'success',
-                        'roleCreate' => 'success',
-                        'roleEdit' => 'success',
-                        'roleDelete' => 'success',
-                        'permissionView' => 'primary',
-                        'permissionCreate' => 'primary',
-                        'permissionEdit' => 'primary',
-                        'permissionDelete' => 'primary',
-                        'customerView' => 'info',
-                        'customerCreate' => 'info',
-                        'customerEdit' => 'info',
-                        'customerDelete' => 'info',
+                        'userView' => 'userBadge',
+                        'userCreate' => 'userBadge',
+                        'userEdit' => 'userBadge',
+                        'userDelete' => 'userBadge',
+                        'roleView' => 'roleBadge',
+                        'roleCreate' => 'roleBadge',
+                        'roleEdit' => 'roleBadge',
+                        'roleDelete' => 'roleBadge',
+                        'permissionView' => 'permissionBadge',
+                        'permissionCreate' => 'permissionBadge',
+                        'permissionEdit' => 'permissionBadge',
+                        'permissionDelete' => 'permissionBadge',
+                        'customerView' => 'customerBadge',
+                        'customerCreate' => 'customerBadge',
+                        'customerEdit' => 'customerBadge',
+                        'customerDelete' => 'customerBadge',
                     })
             ])
             ->filters([

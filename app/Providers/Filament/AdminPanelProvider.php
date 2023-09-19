@@ -30,6 +30,10 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->colors([
                 'primary' => Color::Orange,
+                'userBadge' => '#7149C6',
+                'roleBadge' => '#22A699',
+                'permissionBadge' => '#DB005B',
+                'customerBadge' => '#D4D925',
             ])
             ->favicon(asset('images/toolbox-favicon.png'))
             ->navigationItems([
