@@ -35,7 +35,8 @@ class PermissionResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('name'),
+                TextColumn::make('description')
             ])
             ->filters([
                 //

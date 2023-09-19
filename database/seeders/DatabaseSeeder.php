@@ -36,20 +36,20 @@ class DatabaseSeeder extends Seeder
         /**
          * Create Permissions
          */
-        $userView = Permission::create(['name' => 'userView']);
-        $userCreate = Permission::create(['name' => 'userCreate']);
-        $userEdit = Permission::create(['name' => 'userEdit']);
-        $userDelete = Permission::create(['name' => 'userDelete']);
-
-        $roleView = Permission::create(['name' => 'roleView']);
-        $roleCreate = Permission::create(['name' => 'roleCreate']);
-        $roleEdit = Permission::create(['name' => 'roleEdit']);
-        $roleDelete = Permission::create(['name' => 'roleDelete']);
-
-        $permissionView = Permission::create(['name' => 'permissionView']);
-        $permissionCreate = Permission::create(['name' => 'permissionCreate']);
-        $permissionEdit = Permission::create(['name' => 'permissionEdit']);
-        $permissionDelete = Permission::create(['name' => 'permissionDelete']);
+        $userView = Permission::create(['name' => 'userView', 'description' => 'Allow users to view all users']);
+        $userCreate = Permission::create(['name' => 'userCreate', 'description' => 'Allow users to create new users']);
+        $userEdit = Permission::create(['name' => 'userEdit', 'description' => 'Allow users to edit existing users']);
+        $userDelete = Permission::create(['name' => 'userDelete', 'description' => 'Allow users to delete users']);
+        
+        $roleView = Permission::create(['name' => 'roleView', 'description' => 'Allow users to view roles']);
+        $roleCreate = Permission::create(['name' => 'roleCreate', 'description' => 'Allow users to create new roles']);
+        $roleEdit = Permission::create(['name' => 'roleEdit', 'description' => 'Allow users to edit existing roles']);
+        $roleDelete = Permission::create(['name' => 'roleDelete', 'description' => 'Allow users to delete roles']);
+        
+        $permissionView = Permission::create(['name' => 'permissionView', 'description' => 'Allow users to view permissions']);
+        $permissionCreate = Permission::create(['name' => 'permissionCreate', 'description' => 'Allow users to create new permissions']);
+        $permissionEdit = Permission::create(['name' => 'permissionEdit', 'description' => 'Allow users to edit existing permissions']);
+        $permissionDelete = Permission::create(['name' => 'permissionDelete', 'description' => 'Allow users to delete permissions']);        
 
         // Assign permissions to Admin role
         $adminRole->givePermissionTo($userView);
