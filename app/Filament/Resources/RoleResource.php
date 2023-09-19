@@ -42,6 +42,21 @@ class RoleResource extends Resource
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('permissions.name')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'userView' => 'info',
+                        'userCreate' => 'info',
+                        'userEdit' => 'info',
+                        'userDelete' => 'info',
+                        'roleView' => 'success',
+                        'roleCreate' => 'success',
+                        'roleEdit' => 'success',
+                        'roleDelete' => 'success',
+                        'permissionView' => 'primary',
+                        'permissionCreate' => 'primary',
+                        'permissionEdit' => 'primary',
+                        'permissionDelete' => 'primary',
+                    })
             ])
             ->filters([
                 //
