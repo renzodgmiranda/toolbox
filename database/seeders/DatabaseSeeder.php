@@ -54,7 +54,12 @@ class DatabaseSeeder extends Seeder
         $customerView = Permission::create(['name' => 'customerView', 'description' => 'Allow users to view all customers']);
         $customerCreate = Permission::create(['name' => 'customerCreate', 'description' => 'Allow users to create new customers']);
         $customerEdit = Permission::create(['name' => 'customerEdit', 'description' => 'Allow users to edit existing customers']);
-        $customerDelete = Permission::create(['name' => 'customerDelete', 'description' => 'Allow users to delete customers']);    
+        $customerDelete = Permission::create(['name' => 'customerDelete', 'description' => 'Allow users to delete customers']);   
+        
+        $workorderView = Permission::create(['name' => 'workorderView', 'description' => 'Allow users to view all workorders']);
+        $workorderCreate = Permission::create(['name' => 'workorderCreate', 'description' => 'Allow users to create new workorders']);
+        $workorderEdit = Permission::create(['name' => 'workorderEdit', 'description' => 'Allow users to edit existing workorders']);
+        $workorderDelete = Permission::create(['name' => 'workorderDelete', 'description' => 'Allow users to delete workorders']);   
 
         // Assign permissions to Admin role
         $adminRole->givePermissionTo($userView);
@@ -73,6 +78,10 @@ class DatabaseSeeder extends Seeder
         $adminRole->givePermissionTo($customerCreate);
         $adminRole->givePermissionTo($customerEdit);
         $adminRole->givePermissionTo($customerDelete);
+        $adminRole->givePermissionTo($workorderView);
+        $adminRole->givePermissionTo($workorderCreate);
+        $adminRole->givePermissionTo($workorderEdit);
+        $adminRole->givePermissionTo($workorderDelete);
 
         $faker = Faker::create();
         //Create users automatically for testing

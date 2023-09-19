@@ -60,6 +60,10 @@ class RoleResource extends Resource
                         'customerCreate' => 'customerBadge',
                         'customerEdit' => 'customerBadge',
                         'customerDelete' => 'customerBadge',
+                        'workorderView' => 'workorderBadge',
+                        'workorderCreate' => 'workorderBadge',
+                        'workorderEdit' => 'workorderBadge',
+                        'workorderDelete' => 'workorderBadge',
                     })
             ])
             ->filters([
