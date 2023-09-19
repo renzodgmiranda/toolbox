@@ -44,10 +44,10 @@ class RoleResource extends Resource
                 TextColumn::make('permissions.name')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'userView' => 'info',
-                        'userCreate' => 'info',
-                        'userEdit' => 'info',
-                        'userDelete' => 'info',
+                        'userView' => 'gray',
+                        'userCreate' => 'gray',
+                        'userEdit' => 'gray',
+                        'userDelete' => 'gray',
                         'roleView' => 'success',
                         'roleCreate' => 'success',
                         'roleEdit' => 'success',
@@ -56,6 +56,10 @@ class RoleResource extends Resource
                         'permissionCreate' => 'primary',
                         'permissionEdit' => 'primary',
                         'permissionDelete' => 'primary',
+                        'customerView' => 'info',
+                        'customerCreate' => 'info',
+                        'customerEdit' => 'info',
+                        'customerDelete' => 'info',
                     })
             ])
             ->filters([
