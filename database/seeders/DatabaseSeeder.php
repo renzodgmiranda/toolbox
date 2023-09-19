@@ -83,6 +83,33 @@ class DatabaseSeeder extends Seeder
         $adminRole->givePermissionTo($workorderEdit);
         $adminRole->givePermissionTo($workorderDelete);
 
+        // Assign permissions to Vendor role
+        $vendorRole->givePermissionTo($customerView);
+        $vendorRole->givePermissionTo($workorderView);
+        $vendorRole->givePermissionTo($workorderEdit);
+
+        // Assign permissions to Client role
+        $clientRole->givePermissionTo($userView);
+        $clientRole->givePermissionTo($userCreate);
+        $clientRole->givePermissionTo($userEdit);
+        $clientRole->givePermissionTo($userDelete);
+        $clientRole->givePermissionTo($roleView);
+        $clientRole->givePermissionTo($roleCreate);
+        $clientRole->givePermissionTo($roleEdit);
+        $clientRole->givePermissionTo($roleDelete);
+        $clientRole->givePermissionTo($permissionView);
+        $clientRole->givePermissionTo($permissionCreate);
+        $clientRole->givePermissionTo($permissionEdit);
+        $clientRole->givePermissionTo($permissionDelete);
+        $clientRole->givePermissionTo($customerView);
+        $clientRole->givePermissionTo($customerCreate);
+        $clientRole->givePermissionTo($customerEdit);
+        $clientRole->givePermissionTo($customerDelete);
+        $clientRole->givePermissionTo($workorderView);
+        $clientRole->givePermissionTo($workorderCreate);
+        $clientRole->givePermissionTo($workorderEdit);
+        $clientRole->givePermissionTo($workorderDelete);
+
         $faker = Faker::create();
         //Create users automatically for testing
         $user = User::create([
