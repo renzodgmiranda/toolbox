@@ -28,6 +28,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('dashboard')
             ->path('dashboard')
             ->login()
+            ->databaseNotifications()
+            ->databaseNotificationsPolling(30)
             ->colors([
                 'primary' => Color::Orange,
                 'userBadge' => '#E55604',
