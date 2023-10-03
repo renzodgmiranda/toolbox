@@ -258,6 +258,45 @@ class WorkorderResource extends Resource
                                 ->sendToDatabase($user);
                         }
                     }),
+                Tables\Actions\Action::make('Assign WO')->label('Assign WO')
+                    ->icon('heroicon-o-wrench-screwdriver')
+                    ->color('gray')
+                    ->button()
+                    ->visible(function (Workorder $workorder) {
+                        $user = Auth::user();
+                        
+                        if($user->hasAnyRole(['Vendor'])) {
+                            return false;
+                        }
+                    
+                        return $workorder->wo_status == 'Pending' && is_null($workorder->user_id);
+                    })
+                    ->form([
+                        Select::make('Vendor')
+                            ->searchable()
+                            ->preload()
+                            ->native(false)
+                            ->options(User::query()->pluck('name', 'id')),
+                    ])
+                    ->action(function (Workorder $workorder, array $data) {
+                        $vendorId = $data['Vendor'];
+
+                        $workorder->update([ 
+                            'user_id' => $vendorId,
+                        ]);
+
+                        $workorder->users()->associate($vendorId);
+                        $workorder->save();
+
+                        $vendor = User::find($vendorId);
+
+                        Notification::make()
+                            ->icon('heroicon-o-tag')
+                            ->iconColor('success')
+                            ->title($workorder->wo_problem . ' (<strong>' . $workorder->wo_number . '</strong>)')
+                            ->body('You have been assigned a new Workorder')
+                            ->sendToDatabase($vendor);
+                    }),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
