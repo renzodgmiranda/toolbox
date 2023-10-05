@@ -246,7 +246,7 @@ class WorkorderResource extends Resource
 
                         // Get all Admin and Client users
                         $adminAndClient = User::role(['Admin', 'Client'])->get();
-                        $vendorName = User::find($vendorId)->name;
+                        $vendor = User::find($vendorId)->name;
 
                         // Notify each Admin and Client user
                         foreach ($adminAndClient as $user) {
@@ -254,7 +254,7 @@ class WorkorderResource extends Resource
                                 ->icon('heroicon-o-clipboard-document-check')
                                 ->iconColor('success')
                                 ->title('Completed by Vendor (<strong>' . $workorder->wo_number . '</strong>)')
-                                ->body('WO has been completed by <strong>' . $vendorName . '</strong>')
+                                ->body('WO has been completed by <strong>' . $vendor . '</strong>')
                                 ->sendToDatabase($user);
                         }
                     }),
