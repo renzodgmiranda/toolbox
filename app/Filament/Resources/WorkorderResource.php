@@ -174,16 +174,23 @@ class WorkorderResource extends Resource
 
                         // Get all Admin and Client users
                         $adminAndClient = User::role(['Admin', 'Client'])->get();
-                        $vendorName = User::find($vendorId)->name;
+                        $vendor = User::find($vendorId)->name;
+                        $vendorNotif = User::find($vendorId);
 
                         // Notify each Admin and Client user
                         foreach ($adminAndClient as $user) {
                             Notification::make()
                                 ->success()
                                 ->title('Accepted by Vendor (<strong>' . $workorder->wo_number . '</strong>)')
-                                ->body('WO has been accepted by <strong>' . $vendorName . '</strong>')
+                                ->body('WO has been accepted by <strong>' . $vendor . '</strong>')
                                 ->sendToDatabase($user);
                         }
+
+                        Notification::make()
+                            ->success()
+                            ->title('Workorder Accepeted (<strong>' . $workorder->wo_number . '</strong>)')
+                            ->body('You have accepted a Workorder')
+                            ->sendToDatabase($vendorNotif);
                     }),
                 Tables\Actions\Action::make('Decline')
                     ->icon('heroicon-m-x-mark')
@@ -210,16 +217,23 @@ class WorkorderResource extends Resource
 
                         // Get all Admin and Client users
                         $adminAndClient = User::role(['Admin', 'Client'])->get();
-                        $vendorName = User::find($vendorId)->name;
+                        $vendor = User::find($vendorId)->name;
+                        $vendorNotif = User::find($vendorId);
 
                         // Notify each Admin and Client user
                         foreach ($adminAndClient as $user) {
                             Notification::make()
                                 ->danger()
                                 ->title('Declined by Vendor (<strong>' . $workorder->wo_number . '</strong>)')
-                                ->body('WO has been declined by <strong>' . $vendorName . '</strong>')
+                                ->body('WO has been declined by <strong>' . $vendor . '</strong>')
                                 ->sendToDatabase($user);
                         }
+
+                        Notification::make()
+                            ->danger()
+                            ->title('Workorder Declined (<strong>' . $workorder->wo_number . '</strong>)')
+                            ->body('You have declined a Workorder')
+                            ->sendToDatabase($vendorNotif);
                     }),
                 Tables\Actions\Action::make('Complete')
                     ->icon('heroicon-o-clipboard-document-check')
@@ -247,6 +261,7 @@ class WorkorderResource extends Resource
                         // Get all Admin and Client users
                         $adminAndClient = User::role(['Admin', 'Client'])->get();
                         $vendor = User::find($vendorId)->name;
+                        $vendorNotif = User::find($vendorId);
 
                         // Notify each Admin and Client user
                         foreach ($adminAndClient as $user) {
@@ -257,6 +272,13 @@ class WorkorderResource extends Resource
                                 ->body('WO has been completed by <strong>' . $vendor . '</strong>')
                                 ->sendToDatabase($user);
                         }
+
+                        Notification::make()
+                            ->icon('heroicon-o-clipboard-document-check')
+                            ->iconColor('success')
+                            ->title('Workorder Complete (<strong>' . $workorder->wo_number . '</strong>)')
+                            ->body('You have completed a Workorder')
+                            ->sendToDatabase($vendorNotif);
                     }),
                 Tables\Actions\Action::make('Assign WO')->label('Assign WO')
                     ->icon('heroicon-o-wrench-screwdriver')
