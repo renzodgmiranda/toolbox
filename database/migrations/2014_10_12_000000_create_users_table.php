@@ -21,6 +21,7 @@ return new class extends Migration
             $table->float('user_lat')->nullable();
             $table->float('user_long')->nullable();
             $table->string('user_address')->nullable();
+            $table->string('user_contact')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

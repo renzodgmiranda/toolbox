@@ -130,7 +130,8 @@ class DatabaseSeeder extends Seeder
             'user_preferred' => true,
             'user_lat' => $faker->latitude(40.49, 40.92),
             'user_long' => $faker->longitude(-74.26, -73.68),
-            'user_address' => $faker->address
+            'user_address' => $faker->address,
+            'user_contact' => '+639171770697'
         ]);
         $user2->assignRole('Vendor');
 
