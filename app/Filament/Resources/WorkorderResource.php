@@ -23,6 +23,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Twilio\Rest\Client;
 
 class WorkorderResource extends Resource
 {
@@ -318,6 +319,18 @@ class WorkorderResource extends Resource
                             ->title($workorder->wo_problem . ' (<strong>' . $workorder->wo_number . '</strong>)')
                             ->body('You have been assigned a new Workorder')
                             ->sendToDatabase($vendor);
+
+                        if ($vendor->user_contact) {
+                            $twilio = new Client(config('services.twilio.sid'), config('services.twilio.token'));
+                            $messageBody = 'You have been assigned a (' . $workorder->wo_number . ') - ' . $workorder->wo_problem;
+                            $message = $twilio->messages->create(
+                                $vendor->user_contact,
+                                [
+                                    'from' => config('services.twilio.phone'),
+                                    'body' => $messageBody
+                                ]
+                            );
+                        }
                     }),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
