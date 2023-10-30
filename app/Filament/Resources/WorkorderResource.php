@@ -320,17 +320,20 @@ class WorkorderResource extends Resource
                             ->body('You have been assigned a new Workorder')
                             ->sendToDatabase($vendor);
 
-                        if ($vendor->user_contact) {
-                            $twilio = new Client(config('services.twilio.sid'), config('services.twilio.token'));
-                            $messageBody = 'You have been assigned a (' . $workorder->wo_number . ') - ' . $workorder->wo_problem;
-                            $message = $twilio->messages->create(
-                                $vendor->user_contact,
-                                [
-                                    'from' => config('services.twilio.phone'),
-                                    'body' => $messageBody
-                                ]
-                            );
-                        }
+                        /**
+                         * Temporarily disabled Twilio SMS notifications
+                         */
+                        //if ($vendor->user_contact) {
+                        //    $twilio = new Client(config('services.twilio.sid'), config('services.twilio.token'));
+                        //    $messageBody = 'You have been assigned a (' . $workorder->wo_number . ') - ' . $workorder->wo_problem;
+                        //    $message = $twilio->messages->create(
+                        //        $vendor->user_contact,
+                        //        [
+                        //            'from' => config('services.twilio.phone'),
+                        //            'body' => $messageBody
+                        //        ]
+                        //    );
+                        //}
                     }),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
