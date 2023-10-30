@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\WorkorderResource\Pages;
 use App\Filament\Resources\WorkorderResource\RelationManagers;
 use App\Filament\Widgets\WorkorderStats;
+use App\Mail\WorkorderAssigned;
 use App\Models\User;
 use App\Models\Workorder;
 use Filament\Forms;
@@ -23,6 +24,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Twilio\Rest\Client;
 
 class WorkorderResource extends Resource
@@ -319,6 +321,8 @@ class WorkorderResource extends Resource
                             ->title($workorder->wo_problem . ' (<strong>' . $workorder->wo_number . '</strong>)')
                             ->body('You have been assigned a new Workorder')
                             ->sendToDatabase($vendor);
+                        
+                        Mail::to($vendor->email)->send(new WorkorderAssigned($workorder));
 
                         /**
                          * Temporarily disabled Twilio SMS notifications
