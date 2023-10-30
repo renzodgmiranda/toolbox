@@ -322,7 +322,10 @@ class WorkorderResource extends Resource
                             ->body('You have been assigned a new Workorder')
                             ->sendToDatabase($vendor);
                         
-                        Mail::to($vendor->email)->send(new WorkorderAssigned($workorder));
+                        /**
+                         * Temporarily disabled MailGun email notifications
+                         */
+                        //Mail::to($vendor->email)->send(new WorkorderAssigned($workorder));
 
                         /**
                          * Temporarily disabled Twilio SMS notifications
