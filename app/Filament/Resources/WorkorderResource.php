@@ -24,6 +24,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Twilio\Rest\Client;
 
@@ -201,42 +202,76 @@ class WorkorderResource extends Resource
                     ->button()
                     ->visible(function (Workorder $workorder) {
                         $user = Auth::user();
-                        
-                        if($user->hasAnyRole(['Admin', 'Client'])) {
-                            return false;
-                        }
-                    
-                        return $workorder->wo_status == 'Pending';
+                        return !$user->hasAnyRole(['Admin', 'Client']) && $workorder->wo_status == 'Pending';
                     })
                     ->action(function (Workorder $workorder) {
-                        $user = Auth::user();
-                        $vendorId = $workorder->user_id;
+                        $oldVendorId = $workorder->user_id;
+                        $customer = $workorder->customers; // Ensure this relationship exists in your Workorder model
+                
+                        // Check if there is an associated customer with latitude and longitude
+                        if (!$customer || is_null($customer->cus_lat) || is_null($customer->cus_long)) {
+                            // Handle the case where there's no customer or no location data
+                            // You might want to set an error message or take other appropriate action
+                            return; // Exit the action early
+                        }
+                
+                        $customerLat = $customer->cus_lat;
+                        $customerLng = $customer->cus_long;
+                
+                        // Update the work order to make it pending and dissociate the current vendor
                         $workorder->update([
                             'wo_status' => 'Pending',
                             'user_id' => null,
                         ]);
                         $workorder->users()->dissociate();
                         $workorder->save();
-
+                
+                        // Find the closest vendor using Haversine formula
+                        $newVendor = User::role('Vendor')
+                            ->select('users.*', DB::raw("3959 * acos(
+                                cos(radians($customerLat))
+                                * cos(radians(users.user_lat))
+                                * cos(radians(users.user_long) - radians($customerLng))
+                                + sin(radians($customerLat))
+                                * sin(radians(users.user_lat))
+                            ) AS distance"))
+                            ->havingRaw('distance > 0') // Ensure it's not the old vendor
+                            ->where('id', '!=', $oldVendorId)
+                            ->orderBy('distance', 'asc')
+                            ->first();
+                
+                        if ($newVendor) {
+                            $workorder->user_id = $newVendor->id;
+                            $workorder->save();
+                
+                            // Notify the new vendor
+                            Notification::make()
+                                ->success()
+                                ->title('New Workorder Assignment (<strong>' . $workorder->wo_number . '</strong>)')
+                                ->body('You have been assigned a new work order')
+                                ->sendToDatabase($newVendor);
+                        }
+                
                         // Get all Admin and Client users
-                        $adminAndClient = User::role(['Admin', 'Client'])->get();
-                        $vendor = User::find($vendorId)->name;
-                        $vendorNotif = User::find($vendorId);
-
-                        // Notify each Admin and Client user
-                        foreach ($adminAndClient as $user) {
+                        $adminAndClientUsers = User::role(['Admin', 'Client'])->get();
+                        $oldVendorName = User::find($oldVendorId)->name;
+                        $oldVendorNotif = User::find($oldVendorId);
+                
+                        // Notify each Admin and Client user about the declined work order and reassignment
+                        foreach ($adminAndClientUsers as $adminOrClientUser) {
                             Notification::make()
                                 ->danger()
                                 ->title('Declined by Vendor (<strong>' . $workorder->wo_number . '</strong>)')
-                                ->body('WO has been declined by <strong>' . $vendor . '</strong>')
-                                ->sendToDatabase($user);
+                                ->body('WO has been declined by <strong>' . $oldVendorName . '</strong>. Reassigned to <strong>' . ($newVendor ? $newVendor->name : 'No Vendor Found') . '</strong>')
+                                ->sendToDatabase($adminOrClientUser);
                         }
-
+                
+                        // Notify the old vendor that they have declined the work order
                         Notification::make()
                             ->danger()
                             ->title('Workorder Declined (<strong>' . $workorder->wo_number . '</strong>)')
                             ->body('You have declined a Workorder')
-                            ->sendToDatabase($vendorNotif);
+                            ->sendToDatabase($oldVendorNotif);
                     }),
                 Tables\Actions\Action::make('Complete')
                     ->icon('heroicon-o-clipboard-document-check')
