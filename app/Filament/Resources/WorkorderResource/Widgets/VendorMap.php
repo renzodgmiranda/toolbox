@@ -2,14 +2,19 @@
 
 namespace App\Filament\Resources\WorkorderResource\Widgets;
 
+use Cheesegrits\FilamentGoogleMaps\Actions\GoToAction;
+use Cheesegrits\FilamentGoogleMaps\Actions\RadiusAction;
 use Cheesegrits\FilamentGoogleMaps\Filters\RadiusFilter;
 use Cheesegrits\FilamentGoogleMaps\Widgets\MapTableWidget;
 use Cheesegrits\FilamentGoogleMaps\Columns\MapColumn;
+use Cheesegrits\FilamentGoogleMaps\Filters\MapIsFilter;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 
 class VendorMap extends MapTableWidget
 {
+	protected int | string | array $columnSpan = 'full';
+	
 	protected static ?string $heading = 'User Map';
 
 	protected static ?int $sort = 1;
@@ -30,14 +35,6 @@ class VendorMap extends MapTableWidget
 		return [
 			Tables\Columns\TextColumn::make('user_lat'),
 			Tables\Columns\TextColumn::make('user_long'),
-			MapColumn::make('location')
-				->extraImgAttributes(
-					fn ($record): array => ['title' => $record->user_lat . ',' . $record->user_long]
-				)
-				->height('150')
-				->width('250')
-				->type('hybrid')
-				->zoom(15),
 		];
 	}
 
@@ -54,8 +51,6 @@ class VendorMap extends MapTableWidget
 	protected function getTableActions(): array
 	{
 		return [
-			Tables\Actions\ViewAction::make(),
-			Tables\Actions\EditAction::make(),
 			GoToAction::make()
 				->zoom(14),
 			RadiusAction::make(),

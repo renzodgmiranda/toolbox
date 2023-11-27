@@ -40,4 +40,14 @@ class ListWorkorders extends ListRecords
             \App\Filament\Widgets\WorkorderStats::class,
         ];
     }
+
+    /**
+     * List all available widgets on footer for Workorder resource
+     */
+    protected function getFooterWidgets(): array
+    {
+        return [
+            \App\Filament\Resources\WorkorderResource\Widgets\VendorMap::class,
+        ];
+    }
 }

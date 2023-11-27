@@ -417,6 +417,7 @@ class WorkorderResource extends Resource
     {
         return [
             \App\Filament\Widgets\WorkorderStats::class,
+            \App\Filament\Resources\WorkorderResource\Widgets\VendorMap::class,
         ];
     }
 }
