@@ -14,8 +14,8 @@ use Illuminate\Database\Eloquent\Builder;
 class VendorMap extends MapTableWidget
 {
 	protected int | string | array $columnSpan = 'full';
-	
-	protected static ?string $heading = 'User Map';
+
+	protected static ?string $heading = 'Vendor Map';
 
 	protected static ?int $sort = 1;
 
@@ -33,8 +33,9 @@ class VendorMap extends MapTableWidget
 	protected function getTableColumns(): array
 	{
 		return [
-			Tables\Columns\TextColumn::make('user_lat'),
-			Tables\Columns\TextColumn::make('user_long'),
+			Tables\Columns\TextColumn::make('name'),
+			Tables\Columns\TextColumn::make('email'),
+			Tables\Columns\TextColumn::make('user_contact'),
 		];
 	}
 
