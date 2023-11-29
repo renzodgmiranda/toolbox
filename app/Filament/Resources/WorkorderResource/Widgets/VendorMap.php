@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources\WorkorderResource\Widgets;
 
+use App\Models\User;
+use App\Models\Workorder;
 use Cheesegrits\FilamentGoogleMaps\Actions\GoToAction;
 use Cheesegrits\FilamentGoogleMaps\Actions\RadiusAction;
 use Cheesegrits\FilamentGoogleMaps\Filters\RadiusFilter;
 use Cheesegrits\FilamentGoogleMaps\Widgets\MapTableWidget;
 use Cheesegrits\FilamentGoogleMaps\Columns\MapColumn;
 use Cheesegrits\FilamentGoogleMaps\Filters\MapIsFilter;
+use Filament\Forms\Components\Select;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -52,9 +55,36 @@ class VendorMap extends MapTableWidget
 	protected function getTableActions(): array
 	{
 		return [
-			GoToAction::make()
+			GoToAction::make()->label('Show Location')
+                ->color('gray')
+                ->button()
 				->zoom(14),
-			RadiusAction::make(),
+			RadiusAction::make()->label('Assign WO')
+                ->icon('heroicon-o-wrench-screwdriver')
+                ->color('gray')
+                ->button()
+                ->form([
+                    Select::make('Workorder')
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->options(Workorder::where('wo_status', 'Pending')
+                            ->whereNull('user_id')
+                            ->pluck('wo_number', 'id'))
+                        ->required()
+                        ->live(),
+                ])
+                ->action(function (User $vendor, array $data) {
+                    $workorderId = $data['Workorder'];
+                    $workorder = Workorder::find($workorderId);
+
+                    $workorder->update([
+                        'user_id' => $vendor->id,
+                    ]);
+
+                    $workorder->users()->associate($vendor->id);
+                    $workorder->save();
+                }),
 		];
 	}
 
