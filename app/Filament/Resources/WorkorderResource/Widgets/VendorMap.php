@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\WorkorderResource\Widgets;
 
+use App\Mail\WorkorderAssigned;
 use App\Models\User;
 use App\Models\Workorder;
 use Cheesegrits\FilamentGoogleMaps\Actions\GoToAction;
@@ -11,8 +12,11 @@ use Cheesegrits\FilamentGoogleMaps\Widgets\MapTableWidget;
 use Cheesegrits\FilamentGoogleMaps\Columns\MapColumn;
 use Cheesegrits\FilamentGoogleMaps\Filters\MapIsFilter;
 use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Mail;
+use Twilio\Rest\Client;
 
 class VendorMap extends MapTableWidget
 {
@@ -84,6 +88,33 @@ class VendorMap extends MapTableWidget
 
                     $workorder->users()->associate($vendor->id);
                     $workorder->save();
+
+                    Notification::make()
+                        ->icon('heroicon-o-tag')
+                        ->iconColor('success')
+                        ->title($workorder->wo_problem . ' (<strong>' . $workorder->wo_number . '</strong>)')
+                        ->body('You have been assigned a new Workorder')
+                        ->sendToDatabase($vendor);
+
+                    /**
+                     * Temporarily disabled MailGun email notifications
+                     */
+                    //Mail::to($vendor->email)->send(new WorkorderAssigned($workorder));
+
+                    /**
+                     * Temporarily disabled Twilio SMS notifications
+                     */
+                    //if ($vendor->user_contact) {
+                    //    $twilio = new Client(config('services.twilio.sid'), config('services.twilio.token'));
+                    //    $messageBody = 'You have been assigned a (' . $workorder->wo_number . ') - ' . $workorder->wo_problem;
+                    //    $message = $twilio->messages->create(
+                    //        $vendor->user_contact,
+                    //        [
+                    //            'from' => config('services.twilio.phone'),
+                    //            'body' => $messageBody
+                    //        ]
+                    //    );
+                    //}
                 }),
 		];
 	}
