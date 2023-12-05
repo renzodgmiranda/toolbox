@@ -1,4 +1,4 @@
-<img src="https://i.ibb.co/FKmqkwv/Toolbox-Original-with-word.png" alt="Logo" width="300">
+<center><img src="https://i.ibb.co/FKmqkwv/Toolbox-Original-with-word.png" alt="Logo" width="300"></center>
 
 ## Installation
 
