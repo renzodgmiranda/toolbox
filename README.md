@@ -1,66 +1,140 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<img src="https://i.ibb.co/FKmqkwv/Toolbox-Original-with-word.png" alt="Logo" width="300">
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Installation
 
-## About Laravel
+1. Follow LAMP server installation **[here](https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-22-04)**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+2. After installing MySQL change the root password.
+```bash
+sudo mysql
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password by 'mynewpassword';
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+3. After changing root password, run MySQL Secure Installation.
+```bash
+sudo mysql_secure_installation
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+4. Best to create your own account on MySQL.
+```bash
+mysql -u root -p
+CREATE USER 'new_user'@'localhost' IDENTIFIED BY 'new_password';
+```
 
-## Learning Laravel
+5. Continue rest of installation from the **[first link](https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-22-04)**.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+6. Install Composer.
+```bash
+sudo apt install composer
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+7. Install Laravel.
+```bash
+composer global require laravel/installer
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+8. Add Laravel path to .bashrc. and reboot server.
+```bash
+#Laravel Path
+export PATH="~/.config/composer/vendor/bin:$PATH"
+```
 
-## Laravel Sponsors
+9. After rebooting, check if Laravel is working by running command on CLI.
+```bash
+laravel
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+10. Install NodeJS via NVM (curl).
+```bash
+https://github.com/nvm-sh/nvm
+sudo apt install curl
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+reboot terminal
+nvm install --lts
+```
 
-### Premium Partners
+11. Install PHPMYADMIN.
+```bash
+sudo apt install phpmyadmin
+tick "apache2"
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+12. Generate SSH Key using terminal.
+```bash
+ssh-keygen -t rsa -b 4096 -C "username@domain.com"
+```
+    A. Go to Bitbucket settings.  
+    B. Personal Bitbucket settings.  
+    C. Under security, click SSH Keys.  
+    D. Add the public key.
 
-## Contributing
+13. Set folder ownership before cloning.
+```bash
+sudo chown -R $USER:$USER /var/www/folder
+sudo chmod -R 755 /var/www/folder
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+14. Clone Toolbox.
+```bash
+git clone git@bitbucket.org:teamspan-global-solutions/toolbox.git
+```
 
-## Code of Conduct
+15. Run composer update to update all assets.
+```bash
+composer update
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+16. Grant full access to Toolbox database.
+```bash
+GRANT ALL ON toolbox_dispatch.* TO 'new_user'@'localhost';
+```
 
-## Security Vulnerabilities
+17. Migrate Toolbox database.
+```bash
+php artisan migrate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+18. Create a test user for Toolbox.
+```bash
+php artisan nova:user
+```
 
-## License
+19. For Toolbox testing.
+```bash
+php artisan serve --host=your_server_ip_address
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+## SAMBA Installation
+
+You may use SAMBA to manage your files locally on your device.
+
+1. Install SAMBA.
+```bash
+sudo apt install samba
+```
+
+2. Create a SAMBA user.
+```bash
+sudo smbpasswd -a user
+```
+
+3. Add the ff. lines on SAMBA configuration.
+```bash
+sudo nano /etc/samba/smb.conf
+
+#Toolbox Directory
+[teamspan-toolbox]
+   comment = Toolbox directory
+   path = /var/www/html/toolbox
+   read only = no
+   browsable = yes
+```
+
+4. Restart SAMBA service.
+```bash
+sudo service smbd restart
+```
+
+5. You should now be able to map Toolbox on your local drive.
