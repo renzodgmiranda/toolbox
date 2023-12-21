@@ -42,15 +42,15 @@ class WorkorderResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         $user = Auth::user();
-    
+
         if ($user->hasRole('Vendor')) {
             // Only count workorders assigned to the vendor
             return static::getModel()::where('user_id', $user->id)->count();
         }
-    
+
         // For other roles or users without a specific role, count all workorders
         return static::getModel()::count();
-    }    
+    }
 
     public static function form(Form $form): Form
     {
@@ -107,7 +107,7 @@ class WorkorderResource extends Resource
                             ]),
                     ]),
             ]);
-    }    
+    }
 
     public static function table(Table $table): Table
     {
@@ -136,14 +136,14 @@ class WorkorderResource extends Resource
                     ->searchable(),
                 TextColumn::make('wo_priority')->label('Priority')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {            
+                    ->color(fn (string $state): string => match ($state) {
                         'Low' => 'success',
                         'Medium' => 'warning',
                         'High' => 'danger',
                     }),
                 TextColumn::make('wo_status')->label('Status')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {     
+                    ->color(fn (string $state): string => match ($state) {
                         'Completed' => 'success',
                         'Ongoing' => 'warning',
                         'Pending' => 'danger',
@@ -159,11 +159,11 @@ class WorkorderResource extends Resource
                     ->button()
                     ->visible(function (Workorder $workorder) {
                         $user = Auth::user();
-                        
+
                         if($user->hasAnyRole(['Admin', 'Client'])) {
                             return false;
                         }
-                    
+
                         return $workorder->wo_status == 'Pending';
                     })
                     ->action(function (Workorder $workorder) {
@@ -207,17 +207,17 @@ class WorkorderResource extends Resource
                     ->action(function (Workorder $workorder) {
                         $oldVendorId = $workorder->user_id;
                         $customer = $workorder->customers; // Ensure this relationship exists in your Workorder model
-                
+
                         // Check if there is an associated customer with latitude and longitude
                         if (!$customer || is_null($customer->cus_lat) || is_null($customer->cus_long)) {
                             // Handle the case where there's no customer or no location data
                             // You might want to set an error message or take other appropriate action
                             return; // Exit the action early
                         }
-                
+
                         $customerLat = $customer->cus_lat;
                         $customerLng = $customer->cus_long;
-                
+
                         // Update the work order to make it pending and dissociate the current vendor
                         $workorder->update([
                             'wo_status' => 'Pending',
@@ -225,7 +225,7 @@ class WorkorderResource extends Resource
                         ]);
                         $workorder->users()->dissociate();
                         $workorder->save();
-                
+
                         // Find the closest vendor using Haversine formula
                         $newVendor = User::role('Vendor')
                             ->select('users.*', DB::raw("3959 * acos(
@@ -239,11 +239,11 @@ class WorkorderResource extends Resource
                             ->where('id', '!=', $oldVendorId)
                             ->orderBy('distance', 'asc')
                             ->first();
-                
+
                         if ($newVendor) {
                             $workorder->user_id = $newVendor->id;
                             $workorder->save();
-                
+
                             // Notify the new vendor
                             Notification::make()
                                 ->success()
@@ -251,12 +251,12 @@ class WorkorderResource extends Resource
                                 ->body('You have been assigned a new work order')
                                 ->sendToDatabase($newVendor);
                         }
-                
+
                         // Get all Admin and Client users
                         $adminAndClientUsers = User::role(['Admin', 'Client'])->get();
                         $oldVendorName = User::find($oldVendorId)->name;
                         $oldVendorNotif = User::find($oldVendorId);
-                
+
                         // Notify each Admin and Client user about the declined work order and reassignment
                         foreach ($adminAndClientUsers as $adminOrClientUser) {
                             Notification::make()
@@ -265,7 +265,7 @@ class WorkorderResource extends Resource
                                 ->body('WO has been declined by <strong>' . $oldVendorName . '</strong>. Reassigned to <strong>' . ($newVendor ? $newVendor->name : 'No Vendor Found') . '</strong>')
                                 ->sendToDatabase($adminOrClientUser);
                         }
-                
+
                         // Notify the old vendor that they have declined the work order
                         Notification::make()
                             ->danger()
@@ -279,11 +279,11 @@ class WorkorderResource extends Resource
                     ->button()
                     ->visible(function (Workorder $workorder) {
                         $user = Auth::user();
-                        
+
                         if($user->hasAnyRole(['Admin', 'Client'])) {
                             return false;
                         }
-                    
+
                         return $workorder->wo_status == 'Ongoing';
                     })
                     ->action(function (Workorder $workorder) {
@@ -324,15 +324,16 @@ class WorkorderResource extends Resource
                     ->button()
                     ->visible(function (Workorder $workorder) {
                         $user = Auth::user();
-                        
+
                         if($user->hasAnyRole(['Vendor'])) {
                             return false;
                         }
-                    
+
                         return $workorder->wo_status == 'Pending' && is_null($workorder->user_id);
                     })
                     ->form([
                         Select::make('Vendor')
+                            ->multiple()
                             ->searchable()
                             ->preload()
                             ->native(false)
@@ -341,7 +342,7 @@ class WorkorderResource extends Resource
                     ->action(function (Workorder $workorder, array $data) {
                         $vendorId = $data['Vendor'];
 
-                        $workorder->update([ 
+                        $workorder->update([
                             'user_id' => $vendorId,
                         ]);
 
@@ -356,7 +357,7 @@ class WorkorderResource extends Resource
                             ->title($workorder->wo_problem . ' (<strong>' . $workorder->wo_number . '</strong>)')
                             ->body('You have been assigned a new Workorder')
                             ->sendToDatabase($vendor);
-                        
+
                         /**
                          * Temporarily disabled MailGun email notifications
                          */
@@ -393,14 +394,14 @@ class WorkorderResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
