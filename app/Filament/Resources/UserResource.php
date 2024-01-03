@@ -15,6 +15,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -52,9 +53,18 @@ class UserResource extends Resource
                                     ->dehydrated(fn (?string $state): bool => filled($state)),
                                 Select::make('roles')
                                     ->native(false)
-                                    ->relationship('roles', 'name'),
-                                Toggle::make('user_preferred')->label('Preferred'),
+                                    ->relationship('roles', 'name')
+                                    ->live(),
                             ]),
+                        Section::make()
+                            ->schema([
+                                TextInput::make('user_rate')->label('Rate')
+                                ->numeric(),
+                                TextInput::make('user_distance_rate')->label('Rate Per Distance')
+                                ->numeric(),
+                                Toggle::make('user_preferred')->label('Preferred'),
+                            ])
+                            ->visible(fn (Get $get): bool => $get('roles') == 2)
                     ]),
                     Group::make()
                     ->schema([

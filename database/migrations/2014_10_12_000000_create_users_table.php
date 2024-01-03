@@ -18,6 +18,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('user_preferred')->nullable();
+            $table->string('user_rate')->nullable();
+            $table->string('user_distance_rate')->nullable();
             $table->float('user_lat')->nullable();
             $table->float('user_long')->nullable();
             $table->string('user_address')->nullable();
