@@ -23,7 +23,7 @@ class VendorMap extends MapTableWidget
 {
 	protected int | string | array $columnSpan = 'full';
 
-	protected static ?string $heading = 'Vendor Map';
+	protected static ?string $heading = 'Customer & Vendor Map';
 
 	protected static ?int $sort = 1;
 
