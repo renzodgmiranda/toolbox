@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\WorkorderResource\Widgets;
 
 use App\Mail\WorkorderAssigned;
+use App\Models\Customer;
 use App\Models\User;
 use App\Models\Workorder;
 use Cheesegrits\FilamentGoogleMaps\Actions\GoToAction;
@@ -122,6 +123,7 @@ class VendorMap extends MapTableWidget
 	protected function getData(): array
 	{
 		$locations = $this->getRecords();
+        $locationsCustomer = Customer::all();
 
 		$data = [];
 
@@ -133,8 +135,51 @@ class VendorMap extends MapTableWidget
                     'lng' => $location->user_long ? round(floatval($location->user_long), static::$precision) : 0,
 				],
                 'id'      => $location->id,
+                'label'     => $location->name,
+
+                /**
+				 * Optionally you can provide custom icons for the map markers,
+				 * either as scalable SVG's, or PNG, which doesn't support scaling.
+				 * If you don't provide icons, the map will use the standard Google marker pin.
+				 */
+				'icon' => [
+					'url' => url('images/vendor-map-pin.svg'),
+					'type' => 'svg',
+                    'scale' => [35,35],
+				],
 			];
 		}
+
+        foreach ($locationsCustomer as $location)
+        {
+			/**
+			 * Each element in the returned data must be an array
+			 * containing a 'location' array of 'lat' and 'lng',
+			 * and a 'label' string (optional but recommended by Google
+			 * for accessibility.
+			 *
+			 * You should also include an 'id' attribute for internal use by this plugin
+			 */
+            $data[] = [
+                'location'  => [
+                    'lat' => $location->cus_lat ? round(floatval($location->cus_lat), static::$precision) : 0,
+                    'lng' => $location->cus_long ? round(floatval($location->cus_long), static::$precision) : 0,
+                ],
+
+                'label'     => $location->cus_name,
+
+				/**
+				 * Optionally you can provide custom icons for the map markers,
+				 * either as scalable SVG's, or PNG, which doesn't support scaling.
+				 * If you don't provide icons, the map will use the standard Google marker pin.
+				 */
+				'icon' => [
+					'url' => url('images/customer-map-pin.svg'),
+					'type' => 'svg',
+                    'scale' => [35,35],
+				],
+            ];
+        }
 
 		return $data;
 	}
