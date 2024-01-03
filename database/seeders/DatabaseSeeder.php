@@ -115,7 +115,7 @@ class DatabaseSeeder extends Seeder
         $user = User::create([
             'name' => 'Renzo Miranda',
             'email' => 'renzo.miranda@teamspan.com',
-            'password' => bcrypt('Renzo973!#'),
+            'password' => bcrypt('renzo973'),
             'user_preferred' => false,
             'user_lat' => $faker->latitude(40.49, 40.92),
             'user_long' => $faker->longitude(-74.26, -73.68),
@@ -156,6 +156,17 @@ class DatabaseSeeder extends Seeder
             'user_address' => $faker->address
         ]);
         $user4->assignRole('Client');
+
+        $user5 = User::create([
+            'name' => 'Stephen Gustilo',
+            'email' => 'stephen.gustilo@teamspan.com',
+            'password' => bcrypt('admin'),
+            'user_preferred' => true,
+            'user_lat' => $faker->latitude(40.49, 40.92),
+            'user_long' => $faker->longitude(-74.26, -73.68),
+            'user_address' => $faker->address
+        ]);
+        $user5->assignRole('Client');
 
         $faker = Faker::create();
         // Array of company names
