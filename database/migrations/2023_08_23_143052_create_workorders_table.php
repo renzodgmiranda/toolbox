@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('second_user_id')->nullable();
+            $table->unsignedBigInteger('third_user_id')->nullable();
             $table->string('wo_number')->nullable();
             $table->string('wo_problem')->nullable();
             $table->string('wo_problem_type')->nullable();

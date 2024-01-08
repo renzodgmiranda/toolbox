@@ -16,6 +16,16 @@ return new class extends Migration
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
+
+            $table->foreign('second_user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
+
+            $table->foreign('third_user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
         });
     }
 

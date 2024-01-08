@@ -132,11 +132,27 @@ class User extends Authenticatable
     ];
 
     /**
-     * Create relationship between Workorders and Users (as Vendors)
+     * Relationship for work orders where the user is the primary vendor.
      */
-    public function workorders(): HasMany
+    public function primaryWorkorders(): HasMany
     {
-        return $this->hasMany(Workorder::class);
+        return $this->hasMany(Workorder::class, 'user_id');
+    }
+
+    /**
+     * Relationship for work orders where the user is the 2nd preferred vendor.
+     */
+    public function secondaryWorkorders(): HasMany
+    {
+        return $this->hasMany(Workorder::class, 'second_user_id');
+    }
+
+    /**
+     * Relationship for work orders where the user is the 3rd preferred vendor.
+     */
+    public function tertiaryWorkorders(): HasMany
+    {
+        return $this->hasMany(Workorder::class, 'third_user_id');
     }
 
     /**

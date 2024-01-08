@@ -205,74 +205,58 @@ class WorkorderResource extends Resource
                         return !$user->hasAnyRole(['Admin', 'Client']) && $workorder->wo_status == 'Pending';
                     })
                     ->action(function (Workorder $workorder) {
+                        // Decline logic for current vendor
                         $oldVendorId = $workorder->user_id;
-                        $customer = $workorder->customers; // Ensure this relationship exists in your Workorder model
-
-                        // Check if there is an associated customer with latitude and longitude
-                        if (!$customer || is_null($customer->cus_lat) || is_null($customer->cus_long)) {
-                            // Handle the case where there's no customer or no location data
-                            // You might want to set an error message or take other appropriate action
-                            return; // Exit the action early
-                        }
-
-                        $customerLat = $customer->cus_lat;
-                        $customerLng = $customer->cus_long;
-
-                        // Update the work order to make it pending and dissociate the current vendor
-                        $workorder->update([
-                            'wo_status' => 'Pending',
-                            'user_id' => null,
-                        ]);
-                        $workorder->users()->dissociate();
-                        $workorder->save();
-
-                        // Find the closest vendor using Haversine formula
-                        $newVendor = User::role('Vendor')
-                            ->select('users.*', DB::raw("3959 * acos(
-                                cos(radians($customerLat))
-                                * cos(radians(users.user_lat))
-                                * cos(radians(users.user_long) - radians($customerLng))
-                                + sin(radians($customerLat))
-                                * sin(radians(users.user_lat))
-                            ) AS distance"))
-                            ->havingRaw('distance > 0') // Ensure it's not the old vendor
-                            ->where('id', '!=', $oldVendorId)
-                            ->orderBy('distance', 'asc')
-                            ->first();
-
-                        if ($newVendor) {
-                            $workorder->user_id = $newVendor->id;
+                        $secondVendorId = $workorder->second_user_id;
+                        $thirdVendorId = $workorder->third_user_id;
+                
+                        // Function to reassign workorder and notify new vendor
+                        $reassignWorkorder = function($vendorId) use ($workorder) {
+                            $workorder->update(['user_id' => $vendorId]);
                             $workorder->save();
-
+                
                             // Notify the new vendor
-                            Notification::make()
-                                ->success()
-                                ->title('New Workorder Assignment (<strong>' . $workorder->wo_number . '</strong>)')
-                                ->body('You have been assigned a new work order')
-                                ->sendToDatabase($newVendor);
+                            $newVendor = User::find($vendorId);
+                            if ($newVendor) {
+                                Notification::make()
+                                    ->success()
+                                    ->title('New Workorder Assignment (<strong>' . $workorder->wo_number . '</strong>)')
+                                    ->body('You have been assigned a new work order')
+                                    ->sendToDatabase($newVendor);
+                            }
+                        };
+                
+                        // Reassign to 2nd vendor, else 3rd vendor, else make it unassigned
+                        if ($secondVendorId && $secondVendorId != $oldVendorId) {
+                            $reassignWorkorder($secondVendorId);
+                        } elseif ($thirdVendorId && $thirdVendorId != $oldVendorId && $thirdVendorId != $secondVendorId) {
+                            $reassignWorkorder($thirdVendorId);
+                        } else {
+                            // No other preferred vendors, so make it unassigned
+                            $workorder->update(['user_id' => null]);
                         }
-
-                        // Get all Admin and Client users
+                
+                        // Notify Admins and Clients about the decline and reassignment
                         $adminAndClientUsers = User::role(['Admin', 'Client'])->get();
                         $oldVendorName = User::find($oldVendorId)->name;
-                        $oldVendorNotif = User::find($oldVendorId);
-
-                        // Notify each Admin and Client user about the declined work order and reassignment
+                        $newVendorName = User::find($workorder->user_id)->name ?? 'No Vendor Found';
+                
                         foreach ($adminAndClientUsers as $adminOrClientUser) {
                             Notification::make()
                                 ->danger()
                                 ->title('Declined by Vendor (<strong>' . $workorder->wo_number . '</strong>)')
-                                ->body('WO has been declined by <strong>' . $oldVendorName . '</strong>. Reassigned to <strong>' . ($newVendor ? $newVendor->name : 'No Vendor Found') . '</strong>')
+                                ->body('WO has been declined by <strong>' . $oldVendorName . '</strong>. Reassigned to <strong>' . $newVendorName . '</strong>')
                                 ->sendToDatabase($adminOrClientUser);
                         }
-
+                
                         // Notify the old vendor that they have declined the work order
+                        $oldVendorNotif = User::find($oldVendorId);
                         Notification::make()
                             ->danger()
                             ->title('Workorder Declined (<strong>' . $workorder->wo_number . '</strong>)')
                             ->body('You have declined a Workorder')
                             ->sendToDatabase($oldVendorNotif);
-                    }),
+                    }),                
                 Tables\Actions\Action::make('Complete')
                     ->icon('heroicon-o-clipboard-document-check')
                     ->color('info')
@@ -332,8 +316,20 @@ class WorkorderResource extends Resource
                         return $workorder->wo_status == 'Pending' && is_null($workorder->user_id);
                     })
                     ->form([
-                        Select::make('Vendor')
-                            ->multiple()
+                        Select::make('Vendor')->label('1st Preferred Vendor')
+                            ->required()
+                            ->searchable()
+                            ->preload()
+                            ->native(false)
+                            ->options(User::query()->pluck('name', 'id')),
+                        
+                        Select::make('secondVendor')->label('2nd Preferred Vendor')
+                            ->searchable()
+                            ->preload()
+                            ->native(false)
+                            ->options(User::query()->pluck('name', 'id')),
+
+                        Select::make('thirdVendor')->label('3rd Preferred Vendor')
                             ->searchable()
                             ->preload()
                             ->native(false)
@@ -341,9 +337,13 @@ class WorkorderResource extends Resource
                     ])
                     ->action(function (Workorder $workorder, array $data) {
                         $vendorId = $data['Vendor'];
+                        $secondVendorId = $data['secondVendor'] ?? null;
+                        $thirdVendorId = $data['thirdVendor'] ?? null;
 
                         $workorder->update([
                             'user_id' => $vendorId,
+                            'second_user_id' => $secondVendorId,
+                            'third_user_id' => $thirdVendorId,
                         ]);
 
                         $workorder->users()->associate($vendorId);
