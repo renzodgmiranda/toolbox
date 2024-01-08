@@ -139,6 +139,7 @@ class WorkorderResource extends Resource
 
                 return $query;
             })
+            ->defaultSort('updated_at', 'desc')
             ->columns([
                 TextColumn::make('wo_number')->label('Workorder #')
                     ->searchable(),
