@@ -111,6 +111,21 @@ class WorkorderResource extends Resource
 
     public static function table(Table $table): Table
     {
+        // Function to get grouped vendor options
+        $groupedVendors = function () {
+            return User::query()
+                ->whereHas('roles', function ($query) {
+                    $query->where('name', 'vendor');
+                })
+                ->get()
+                ->groupBy('user_preferred')
+                ->mapWithKeys(function ($group, $key) {
+                    $label = $key ? 'Preferred Vendors' : 'Other Vendors';
+                    return [
+                        $label => $group->pluck('name', 'id')->toArray()
+                    ];
+                });
+        };
         return $table
             /**
              * Modified table query for Vendors to show only Workorders that were assigned to them
@@ -321,19 +336,19 @@ class WorkorderResource extends Resource
                             ->searchable()
                             ->preload()
                             ->native(false)
-                            ->options(User::query()->pluck('name', 'id')),
+                            ->options($groupedVendors()),
                         
                         Select::make('secondVendor')->label('2nd Preferred Vendor')
                             ->searchable()
                             ->preload()
                             ->native(false)
-                            ->options(User::query()->pluck('name', 'id')),
+                            ->options($groupedVendors()),
 
                         Select::make('thirdVendor')->label('3rd Preferred Vendor')
                             ->searchable()
                             ->preload()
                             ->native(false)
-                            ->options(User::query()->pluck('name', 'id')),
+                            ->options($groupedVendors()),
                     ])
                     ->action(function (Workorder $workorder, array $data) {
                         $vendorId = $data['Vendor'];
