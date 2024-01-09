@@ -16,6 +16,9 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -225,12 +228,12 @@ class WorkorderResource extends Resource
                         $oldVendorId = $workorder->user_id;
                         $secondVendorId = $workorder->second_user_id;
                         $thirdVendorId = $workorder->third_user_id;
-                
+
                         // Function to reassign workorder and notify new vendor
                         $reassignWorkorder = function($vendorId) use ($workorder) {
                             $workorder->update(['user_id' => $vendorId]);
                             $workorder->save();
-                
+
                             // Notify the new vendor
                             $newVendor = User::find($vendorId);
                             if ($newVendor) {
@@ -241,7 +244,7 @@ class WorkorderResource extends Resource
                                     ->sendToDatabase($newVendor);
                             }
                         };
-                
+
                         // Reassign to 2nd vendor, else 3rd vendor, else make it unassigned
                         if ($secondVendorId && $secondVendorId != $oldVendorId) {
                             $reassignWorkorder($secondVendorId);
@@ -251,12 +254,12 @@ class WorkorderResource extends Resource
                             // No other preferred vendors, so make it unassigned
                             $workorder->update(['user_id' => null]);
                         }
-                
+
                         // Notify Admins and Clients about the decline and reassignment
                         $adminAndClientUsers = User::role(['Admin', 'Client'])->get();
                         $oldVendorName = User::find($oldVendorId)->name;
                         $newVendorName = User::find($workorder->user_id)->name ?? 'No Vendor Found';
-                
+
                         foreach ($adminAndClientUsers as $adminOrClientUser) {
                             Notification::make()
                                 ->danger()
@@ -264,7 +267,7 @@ class WorkorderResource extends Resource
                                 ->body('WO has been declined by <strong>' . $oldVendorName . '</strong>. Reassigned to <strong>' . $newVendorName . '</strong>')
                                 ->sendToDatabase($adminOrClientUser);
                         }
-                
+
                         // Notify the old vendor that they have declined the work order
                         $oldVendorNotif = User::find($oldVendorId);
                         Notification::make()
@@ -272,7 +275,7 @@ class WorkorderResource extends Resource
                             ->title('Workorder Declined (<strong>' . $workorder->wo_number . '</strong>)')
                             ->body('You have declined a Workorder')
                             ->sendToDatabase($oldVendorNotif);
-                    }),                
+                    }),
                 Tables\Actions\Action::make('Complete')
                     ->icon('heroicon-o-clipboard-document-check')
                     ->color('info')
@@ -338,7 +341,7 @@ class WorkorderResource extends Resource
                             ->preload()
                             ->native(false)
                             ->options($groupedVendors()),
-                        
+
                         Select::make('secondVendor')->label('2nd Preferred Vendor')
                             ->searchable()
                             ->preload()
@@ -409,6 +412,53 @@ class WorkorderResource extends Resource
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
             ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Grid::make(2)
+                    ->schema([
+                        \Filament\Infolists\Components\Section::make('Workorder Details')
+                            ->schema([
+                                TextEntry::make('wo_number')->label('Workorder #'),
+                                TextEntry::make('customers.cus_name')->label('Customer'),
+                                TextEntry::make('users.name')->label('Vendor'),
+                                TextEntry::make('wo_problem')->label('Problem'),
+                                TextEntry::make('wo_problem_type')->label('Problem Type'),
+                                TextEntry::make('wo_description')->label('Description'),
+                                TextEntry::make('wo_customer_po')->label('Customer PO'),
+                                TextEntry::make('wo_asset')->label('Asset'),
+                            ])
+                            ->columnSpan(1),
+                        \Filament\Infolists\Components\Section::make('Service Request Overview')
+                            ->schema([
+                                TextEntry::make('wo_trade')->label('Trade'),
+                                TextEntry::make('wo_category')->label('Category'),
+                                TextEntry::make('wo_tech_nte')->label('Tech. NTE'),
+                                TextEntry::make('wo_schedule')->label('Schedule'),
+                                TextEntry::make('created_at')->label('Created At'),
+                                TextEntry::make('updated_at')->label('Updated At'),
+                                TextEntry::make('wo_priority')->label('Priority')
+                                    ->badge()
+                                    ->color(fn (string $state): string => match ($state) {
+                                        'Low' => 'success',
+                                        'Medium' => 'warning',
+                                        'High' => 'danger',
+                                    }),
+                                TextEntry::make('wo_status')->label('Status')
+                                    ->badge()
+                                    ->color(fn (string $state): string => match ($state) {
+                                        'Completed' => 'success',
+                                        'Ongoing' => 'warning',
+                                        'Pending' => 'danger',
+                                    }),
+                            ])
+                            ->columnSpan(1),
+                ]),
+            ]);
+
     }
 
     public static function getRelations(): array
